@@ -1,0 +1,89 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{51D33194-EC66-4B9A-BDBA-EB80A8CB7233}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>MyStore.Client</RootNamespace>
+    <AssemblyName>MyStore.Client</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="BL\Command\CommandsConstructor.cs" />
+    <Compile Include="BL\Command\CommandsProvider.cs" />
+    <Compile Include="BL\Command\Service\ServiceCommandProcessor.cs" />
+    <Compile Include="BL\Command\Service\ServiceCommandBuilder.cs" />
+    <Compile Include="BL\InitialProcessor.cs" />
+    <Compile Include="BL\MainProcessor.cs" />
+    <Compile Include="BL\Response\ListCarsResponseProcessor.cs" />
+    <Compile Include="BL\Response\ResponseProcessor.cs" />
+    <Compile Include="Config\ConfigurationStringProvider.cs" />
+    <Compile Include="Config\Configurator.cs" />
+    <Compile Include="Config\ConnectionConfigurator.cs" />
+    <Compile Include="Config\UserInterfaceConfiguration.cs" />
+    <Compile Include="Config\LoggerConfigurator.cs" />
+    <Compile Include="Config\MessengerConfiguration.cs" />
+    <Compile Include="Connection\IMessenger.cs" />
+    <Compile Include="Connection\IRetryOptionsProvider.cs" />
+    <Compile Include="Connection\RetryOptionsHardcodeProvider.cs" />
+    <Compile Include="Connection\Socket\SocketMessenger.cs" />
+    <Compile Include="Log\FileLogger.cs" />
+    <Compile Include="Log\ILogger.cs" />
+    <Compile Include="Connection\Socket\ISocketProvider.cs" />
+    <Compile Include="Connection\IConnectionHolder.cs" />
+    <Compile Include="Connection\Socket\ISocketSettingsProvider.cs" />
+    <Compile Include="Presentation\ConsoleUserInterface.cs" />
+    <Compile Include="Presentation\IUserInterface.cs" />
+    <Compile Include="Log\ELogSeverity.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Connection\Socket\SocketConnection.cs" />
+    <Compile Include="Connection\Socket\SocketProvider.cs" />
+    <Compile Include="Connection\Socket\SocketSettingsHardcodeProvider.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\MyStore.CommonLib\MyStore.CommonLib.csproj">
+      <Project>{e00bb153-1e82-440d-8d22-bdbcdfbd2cd7}</Project>
+      <Name>MyStore.CommonLib</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>
