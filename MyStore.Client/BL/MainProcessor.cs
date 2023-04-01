@@ -56,7 +56,7 @@ namespace MyStore.Client
             }
             catch (Exception ex)
             {
-                _userInterface?.ShowMessage(String.Format("Failed to procceed"));
+                _userInterface?.ShowMessage("Failed to procceed");
                 _logger?.Exception(ex, "Error within Start method occured");
                 throw;
             }
@@ -76,7 +76,7 @@ namespace MyStore.Client
 
                     if (!success)
                     {
-                        _userInterface.ShowMessage(String.Format("Input \"{0}\" does not correspond to any possible command, try again.", input));
+                        _userInterface.ShowMessage("Input \"{0}\" does not correspond to any possible command, try again.", input);
                         _logger.Warning("Input \"{0}\" does not correspond to any possible command", input);
                         continue;
                     }

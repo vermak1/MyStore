@@ -56,6 +56,12 @@ namespace MyStore.Client
 
         private void LogInternalWithArgs(String message, ELogSeverity severity, params object[] args)
         {
+            if (args == null)
+            {
+                LogInternal(message, severity);
+                return;
+            }
+
             String formatted = String.Format(message, args);
             LogInternal(formatted, severity);
         }
