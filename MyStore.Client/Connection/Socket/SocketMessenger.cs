@@ -33,7 +33,7 @@ namespace MyStore.Client
             }
             catch (Exception ex)
             {
-                _logger.Exception(ex, String.Format("Receiving message failed from: {0}", _conenction.ServerSocket.RemoteEndPoint));
+                _logger.Exception(ex, "Receiving message failed from: {0}", _conenction.ServerSocket.RemoteEndPoint);
                 throw;
             }
         }
@@ -50,7 +50,7 @@ namespace MyStore.Client
             }
             catch (Exception ex)
             {
-                _logger.Exception(ex, String.Format("Sending message failed to: {0}", _conenction.ServerSocket.RemoteEndPoint));
+                _logger.Exception(ex, "Sending message failed to: {0}", _conenction.ServerSocket.RemoteEndPoint);
                 throw;
             }
         }

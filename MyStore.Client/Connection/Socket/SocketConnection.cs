@@ -29,7 +29,7 @@ namespace MyStore.Client
             }
             catch (Exception ex)
             {
-                _logger.Exception(ex, String.Format("Failed to configure Socket"));
+                _logger.Exception(ex, "Failed to configure Socket");
                 throw;
             }
         }
@@ -43,14 +43,14 @@ namespace MyStore.Client
                     await ServerSocket.ConnectAsync(_settingsProvider.IP, _settingsProvider.Port);
                     if (ServerSocket.Connected)
                     {
-                        _logger.Info(String.Format("Successully connected to server {0}:{1}", _settingsProvider.IP, _settingsProvider.Port));
+                        _logger.Info("Successully connected to server {0}:{1}", _settingsProvider.IP, _settingsProvider.Port);
                         return true;
                     }
                     
                 }
                 catch (Exception ex)
                 {
-                    _logger.Exception(ex, String.Format("Failed to connect to server[{0}:{1}]. Retry {2} of {3}", _settingsProvider.IP, _settingsProvider.Port, i + 1, _retryOptions.RetryCount));
+                    _logger.Exception(ex, "Failed to connect to server[{0}:{1}]. Retry {2} of {3}", _settingsProvider.IP, _settingsProvider.Port, i + 1, _retryOptions.RetryCount);
                     Thread.Sleep(_retryOptions.RetryInterval);
                 }
             }

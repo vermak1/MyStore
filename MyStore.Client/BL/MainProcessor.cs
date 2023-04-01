@@ -77,7 +77,7 @@ namespace MyStore.Client
                     if (!success)
                     {
                         _userInterface.ShowMessage(String.Format("Input \"{0}\" does not correspond to any possible command, try again.", input));
-                        _logger.Warning(String.Format("Input \"{0}\" does not correspond to any possible command", input));
+                        _logger.Warning("Input \"{0}\" does not correspond to any possible command", input);
                         continue;
                     }
 

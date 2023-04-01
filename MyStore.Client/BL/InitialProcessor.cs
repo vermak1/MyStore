@@ -32,7 +32,7 @@ namespace MyStore.Client
             catch(Exception ex)
             {
                 _connectionHolder?.Dispose();
-                _logger.Exception(ex, "Failed to initialize" + nameof(InitialProcessor));
+                _logger.Exception(ex, "Failed to initialize {0}", nameof(InitialProcessor));
                 throw;
             }
         }
@@ -97,7 +97,7 @@ namespace MyStore.Client
             String response = await _messenger.ReceiveMessageAsync();
             Int32 serverVersion = _commandProcessor.GetServerVersion(response);
 
-            _logger.Info(String.Format("Client version: [{0}], server version: [{1}]", clientVersion, serverVersion));
+            _logger.Info("Client version: [{0}], server version: [{1}]", clientVersion, serverVersion);
             return clientVersion == serverVersion;
         }
     }
