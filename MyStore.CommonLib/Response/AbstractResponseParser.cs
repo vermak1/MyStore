@@ -3,11 +3,11 @@
 
 namespace MyStore.CommonLib
 {
-    public class AbstractReponseParser
+    public class AbstractResponseParser
     {
         protected readonly ISerializer _serializer;
 
-        public AbstractReponseParser()
+        public AbstractResponseParser()
         {
             _serializer = new JsonSerializer();
         }
