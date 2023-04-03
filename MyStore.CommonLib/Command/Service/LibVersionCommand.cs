@@ -6,7 +6,7 @@ namespace MyStore.CommonLib
     {
         public EServiceCommand ServiceCommand { get; set; }
 
-        public Int32 Version => LibraryInfo.Version;
+        public Int32 Version { get; set; }
 
     }
 }
