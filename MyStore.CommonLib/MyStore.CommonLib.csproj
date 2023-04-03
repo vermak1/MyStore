@@ -62,7 +62,7 @@
     <Compile Include="Command\ECommandType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Command\Service\LibraryInfo.cs" />
-    <Compile Include="Response\AbstractReponseParser.cs" />
+    <Compile Include="Response\AbstractResponseParser.cs" />
     <Compile Include="Response\AbstractResponseFactory.cs" />
     <Compile Include="Response\ResponseFactory.cs" />
     <Compile Include="Response\ResponseParser.cs" />

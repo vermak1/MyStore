@@ -2,7 +2,7 @@
 
 namespace MyStore.CommonLib
 {
-    public class ResponseParser : AbstractReponseParser
+    public class ResponseParser : AbstractResponseParser
     {
         public ListCarsResponseInfo GetListCarsResponseInfo(String response)
         {
