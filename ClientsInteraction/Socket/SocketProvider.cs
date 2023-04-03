@@ -7,9 +7,9 @@ namespace MyStore.Server
     {
         private readonly IServerSocketSettingsProvider _settingsProvider;
 
-        public SocketProvider()
+        public SocketProvider(IServerSocketSettingsProvider settings)
         {
-            _settingsProvider = new SocketSettingsHardcodeProvider();
+            _settingsProvider = settings;
         }
 
         public Socket ConfigureServerSocket()

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Net.Sockets;
-using System.Threading.Tasks;
 
 namespace MyStore.Server
 {
@@ -22,7 +21,8 @@ namespace MyStore.Server
             catch(Exception ex)
             {
                 _clientSocket?.Dispose();
-                _logger.Exception(ex, String.Format("Failed to create client context"));
+                _logger.Exception(ex, "Failed to create client context");
+                throw;
             }
             
         }

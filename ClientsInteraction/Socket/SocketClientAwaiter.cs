@@ -22,12 +22,13 @@ namespace MyStore.Server
             try
             {
                 clientSocket = _serverSocket.Accept();
-                _logger.Info(String.Format("Client with IP {0} has been connected", clientSocket.RemoteEndPoint));
+                _logger.Info("Client with IP {0} has been connected", clientSocket.RemoteEndPoint);
             }
             catch (Exception ex) 
             {
                 clientSocket?.Dispose();
                 _logger.Exception(ex, "Connection with client was aborted");
+                throw;
             }
             return new SocketClientContextHolder(clientSocket, _logger);
         }

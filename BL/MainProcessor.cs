@@ -7,10 +7,6 @@ namespace MyStore.Server
     {
         private readonly ILogger _logger;
 
-        private readonly IClientAwaiter _awaiter;
-
-        private readonly ServerSocketConnectionHolder _serverConnection;
-
         private readonly ServiceCommandProcessor _serviceCommandProcessor;
 
         private readonly ServiceCommandBuilder _serviceCommandBuider;
@@ -22,16 +18,13 @@ namespace MyStore.Server
             try
             {
                 _logger = new ServerLogger("MyStore.Server.log");
-                _serverConnection = new ServerSocketConnectionHolder(_logger);
-                _awaiter = new SocketClientAwaiter(_serverConnection.ServerSocket, _logger);
                 _serviceCommandBuider = new ServiceCommandBuilder();
                 _serviceCommandProcessor = new ServiceCommandProcessor();
                 _commandProcessor = new CommandProcessor();
             }
             catch(Exception ex)
             {
-                _serverConnection?.Dispose();
-                _logger?.Exception(ex, "Failed to initialize " + nameof(MainProcessor));
+                _logger?.Exception(ex, "Failed to initialize {0}", nameof(MainProcessor));
                 throw;
             }
 
@@ -39,21 +32,25 @@ namespace MyStore.Server
         }
         public async Task StartServer()
         {
-            try
+            while (true)
             {
-                using (_serverConnection)
+                try
                 {
-                    _serverConnection.OpenConnection();
-                    using (var clientContext = _awaiter.WaitingForClient())
+                    using (ConnectionProvider connectionProvider = new ConnectionProvider(_logger))
                     {
-                        await InternalCycle(clientContext);
+                        var serverConnection = connectionProvider.GetConnectionHolder();
+                        serverConnection.OpenConnection();
+                        IClientAwaiter clientAwaiter = connectionProvider.GetClientAwaiter();
+                        using (IClientContextHolder clientContext = clientAwaiter.WaitingForClient())
+                        {
+                            await InternalCycle(clientContext);
+                        }
                     }
                 }
-            }
-            catch (Exception ex) 
-            {
-                _logger.Exception(ex, "Fail within method " + nameof(StartServer));
-                throw;
+                catch (Exception ex)
+                {
+                    _logger.Exception(ex, "Fail within method {0}", nameof(StartServer));
+                }
             }
         }
 
@@ -66,7 +63,7 @@ namespace MyStore.Server
 
                 if (!correctServiceCommand)
                 {
-                    _logger.Error(String.Format("Wrong command provided: [{0}]", request));
+                    _logger.Error("Wrong command provided: [{0}]", request);
                     return;
                 }
 
@@ -77,7 +74,7 @@ namespace MyStore.Server
                 {
                     var command = await context.Messenger.ReceiveMessageAsync();
                     var t = _commandProcessor.HandleRequest(command);
-                    _logger.Info(String.Format("Command [{0}] was requested", command));
+                    _logger.Info("Command [{0}] was requested", command);
                     
                     String response = await t;
                     await context.Messenger.SendMessageAsync(response);

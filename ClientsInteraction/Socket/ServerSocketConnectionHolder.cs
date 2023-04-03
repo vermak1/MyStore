@@ -6,27 +6,33 @@ namespace MyStore.Server
 {
     internal class ServerSocketConnectionHolder : IServerConnectionHolder
     {
-        public Socket ServerSocket { get; }
-
-        private readonly IServerSocketProvider _socketProvider;
+        private readonly Socket _serverSocket;
 
         private readonly IServerSocketSettingsProvider _settingsProvider;
 
         private readonly ILogger _logger;
-        public ServerSocketConnectionHolder(ILogger logger)
+        public ServerSocketConnectionHolder(ILogger logger, Socket socket, IServerSocketSettingsProvider settings)
         {
-            _socketProvider = new SocketProvider();
-            _settingsProvider = new SocketSettingsHardcodeProvider();
-            ServerSocket = _socketProvider.ConfigureServerSocket();
             _logger = logger;
+            _settingsProvider = settings;
+            try
+            {
+                _serverSocket = socket;
+            }
+            catch (Exception ex)
+            {
+                _serverSocket?.Dispose();
+                _logger.Exception(ex, "Failed to initialize server socket connection");
+                throw;
+            }
         }
 
         private void BindAndStartListen()
         {
             IPAddress ipAddr = IPAddress.Parse(_settingsProvider.IP);
             IPEndPoint endpoint = new IPEndPoint(ipAddr, _settingsProvider.Port);
-            ServerSocket.Bind(endpoint);
-            ServerSocket.Listen(_settingsProvider.MaxConnections);
+            _serverSocket.Bind(endpoint);
+            _serverSocket.Listen(_settingsProvider.MaxConnections);
             _logger.Info("Socket started to bind and listen");
         }
 
@@ -37,12 +43,12 @@ namespace MyStore.Server
 
         public void CloseConnection()
         {
-            ServerSocket?.Close();
+            _serverSocket?.Close();
         }
 
         public void Dispose()
         {
-            ServerSocket?.Dispose();
+            _serverSocket?.Dispose();
         }
     }
 }

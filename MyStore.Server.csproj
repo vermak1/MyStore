@@ -64,6 +64,9 @@
     <Compile Include="ClientsInteraction\Socket\SocketSettingsHardcodeProvider.cs" />
     <Compile Include="BL\Command\CommandExecutor.cs" />
     <Compile Include="BL\Command\Service\ServiceCommandProcessor.cs" />
+    <Compile Include="ClientsInteraction\Config\ConnectionProvider.cs" />
+    <Compile Include="ClientsInteraction\Config\IConnectionConfigurator.cs" />
+    <Compile Include="ClientsInteraction\Config\SocketConnectionConfigurator.cs" />
     <Compile Include="Customer\Customer.cs" />
     <Compile Include="Car\SQLCars.cs" />
     <Compile Include="Customer\ICustomerRepository.cs" />
@@ -91,6 +94,8 @@
       <Name>MyStore.CommonLib</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Config\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
