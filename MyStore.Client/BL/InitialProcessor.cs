@@ -10,28 +10,24 @@ namespace MyStore.Client
 
         private readonly IMessenger _messenger;
 
-        private readonly IConnectionHolder _connectionHolder;
-
         private readonly IUserInterface _userInterface;
 
         private readonly ServiceCommandBuilder _commandProvider;
 
         private readonly ServiceCommandProcessor _commandProcessor;
 
-        public InitialProcessor(ILogger logger, IMessenger messenger, IConnectionHolder connectionHolder, IUserInterface userInterface)
+        public InitialProcessor(ILogger logger, IMessenger messenger, IUserInterface userInterface)
         {
             try
             {
                 _logger = logger;
                 _messenger = messenger;
-                _connectionHolder = connectionHolder;
                 _userInterface = userInterface;
                 _commandProvider = new ServiceCommandBuilder();
                 _commandProcessor = new ServiceCommandProcessor();
             }
             catch(Exception ex)
             {
-                _connectionHolder?.Dispose();
                 _logger.Exception(ex, "Failed to initialize {0}", nameof(InitialProcessor));
                 throw;
             }
@@ -71,7 +67,7 @@ namespace MyStore.Client
             try
             {
                 _userInterface.ShowMessage("Connecting to server...");
-                Boolean success = await _connectionHolder.ConnectToServerAsync();
+                Boolean success = await _messenger.ConnectToServerAsync();
                 if (!success)
                 {
                     _userInterface.ShowMessage("Failed to establish connection to server");
@@ -92,9 +88,8 @@ namespace MyStore.Client
             Int32 clientVersion = LibraryInfo.Version;
 
             String command = _commandProvider.BuildGetVersionCommand();
-            await _messenger.SendMessageAsync(command);
 
-            String response = await _messenger.ReceiveMessageAsync();
+            String response = await _messenger.SendAndReceiveMessageAsync(command);
             Int32 serverVersion = _commandProcessor.GetServerVersion(response);
 
             _logger.Info("Client version: [{0}], server version: [{1}]", clientVersion, serverVersion);

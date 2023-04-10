@@ -19,6 +19,7 @@ namespace MyStore.CommonLib
             LibVersionCommand command = new LibVersionCommand()
             {
                 ServiceCommand = EServiceCommand.ReturnLibraryVersion,
+                Version = LibraryInfo.Version
             };
 
             return _serializer.SerializeObject(command);

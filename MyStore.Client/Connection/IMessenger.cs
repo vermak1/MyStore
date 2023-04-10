@@ -3,10 +3,10 @@ using System.Threading.Tasks;
 
 namespace MyStore.Client
 {
-    internal interface IMessenger
+    internal interface IMessenger : IDisposable
     {
-        Task<String> ReceiveMessageAsync();
-
-        Task SendMessageAsync(String message);
+        Task<Boolean> ConnectToServerAsync();
+        void DisconnectFromServer();
+        Task<String> SendAndReceiveMessageAsync(String message);
     }
 }

@@ -1,18 +1,15 @@
 ﻿using System;
 
-namespace MyStore.Client.Config
+namespace MyStore.Client
 {
     internal class MessengerConfiguration
     {
-        public IMessenger GetMessenger(IConnectionHolder connection, ILogger logger)
+        public IMessenger GetDefaultMessenger(ILogger logger)
         {
-            if (connection == null) 
-                throw new ArgumentNullException(nameof(connection));
-
-            if (connection is SocketConnection socketConnection)
-                return new SocketMessenger(socketConnection, logger);
-
-            throw new NotImplementedException();
+            SocketSettingsHardcodeProvider settings = new SocketSettingsHardcodeProvider();
+            SocketProvider socketProvider = new SocketProvider(settings);
+            RetryOptionsHardcodeProvider retries = new RetryOptionsHardcodeProvider();
+            return new SocketMessenger(logger, socketProvider, settings, retries);
         }
     }
 }

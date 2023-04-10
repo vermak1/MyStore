@@ -3,13 +3,11 @@ using System.Threading.Tasks;
 
 namespace MyStore.Client
 {
-    internal class MainProcessor
+    internal class MainProcessor : IDisposable
     {
         private readonly ILogger _logger;
 
         private readonly IUserInterface _userInterface;
-
-        private readonly IConnectionHolder _connectHolder;
 
         private readonly IMessenger _messenger;
 
@@ -26,33 +24,34 @@ namespace MyStore.Client
             {
                 _configurator = new Configurator("NonExistentPath.txt");
                 _logger = _configurator.GetLogger();
-                _connectHolder = _configurator.GetConnectHolder();
-                _messenger = _configurator.GetMessenger(_connectHolder);
+                _messenger = _configurator.GetMessenger();
                 _userInterface = _configurator.GetUserInterface();
                 _construstor = new CommandsConstructor();
                 _responseProcessor = new ResponseProcessor();
-                _initialProcessor = new InitialProcessor(_logger, _messenger, _connectHolder, _userInterface);
+                _initialProcessor = new InitialProcessor(_logger, _messenger, _userInterface);
             }
             catch(Exception ex)
             {
+                _messenger?.Dispose();
                 _logger?.Exception(ex, "Failed to start application");
-                _connectHolder?.Dispose();
                 throw;
             }
+        }
+
+        public void Dispose()
+        {
+            _messenger?.Dispose();
         }
 
         public async Task Start()
         {
             try
             {
-                using (_connectHolder)
-                {
-                    Boolean success = await _initialProcessor.InitialConnect();
-                    if (!success)
-                        return;
+                Boolean success = await _initialProcessor.InitialConnect();
+                if (!success)
+                    return;
 
-                    await MainCycle();
-                }
+                await MainCycle();
             }
             catch (Exception ex)
             {
@@ -81,8 +80,7 @@ namespace MyStore.Client
                         continue;
                     }
 
-                    await _messenger.SendMessageAsync(command);
-                    String response = await _messenger.ReceiveMessageAsync();
+                    String response = await _messenger.SendAndReceiveMessageAsync(command);
 
                     String responseToUi = _responseProcessor.ProcessResponse(response);
                     _userInterface.ShowMessage(responseToUi);

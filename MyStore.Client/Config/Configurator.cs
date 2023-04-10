@@ -1,13 +1,10 @@
-﻿using MyStore.Client.Config;
-using System;
+﻿using System;
 
 namespace MyStore.Client
 {
     internal class Configurator
     {
         private readonly ConfigurationStringProvider _provider;
-
-        private readonly ConnectionConfigurator _connectionConfig;
 
         private readonly LoggerConfigurator _loggerConfig;
 
@@ -19,31 +16,28 @@ namespace MyStore.Client
 
         public Configurator(String path)
         {
-            _provider = new ConfigurationStringProvider(path);
-            _connectionConfig = new ConnectionConfigurator();
             _loggerConfig = new LoggerConfigurator();
-            _messengerConfig = new MessengerConfiguration();
-            _userInterfaceConfig = new UserInterfaceConfiguration();
+            _provider = new ConfigurationStringProvider(path);
             if (!_provider.ConfigExist)
                 _logger = _loggerConfig.GetDefaultLogger();
+
+            _messengerConfig = new MessengerConfiguration();
+            _userInterfaceConfig = new UserInterfaceConfiguration();
         }
 
-        public IConnectionHolder GetConnectHolder()
+        public IMessenger GetMessenger()
         {
             if (!_provider.ConfigExist)
-                return _connectionConfig.GetDefaultConnectHolder(_logger);
-            throw new NotImplementedException();
-        }
+                return _messengerConfig.GetDefaultMessenger(_logger);
 
-        public IMessenger GetMessenger(IConnectionHolder connection)
-        {
-            return _messengerConfig.GetMessenger(connection, _logger);
+            throw new NotImplementedException();
         }
 
         public ILogger GetLogger()
         {
             if (!_provider.ConfigExist)
                 return _loggerConfig.GetDefaultLogger();
+
             throw new NotImplementedException();
         }
 

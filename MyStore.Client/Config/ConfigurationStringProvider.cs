@@ -8,6 +8,7 @@ namespace MyStore.Client
         private readonly String _path;
 
         public Boolean ConfigExist { get; }
+
         public ConfigurationStringProvider(String path)
         {
             if (path == null)

@@ -9,8 +9,8 @@ namespace MyStore.Client
         {
             try
             {
-                MainProcessor main = new MainProcessor();
-                await main.Start();
+                using (MainProcessor main = new MainProcessor())
+                    await main.Start();
             }
             catch
             {
