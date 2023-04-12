@@ -12,7 +12,6 @@ namespace MyStore.Client
             _parser = new ResponseParser();
         }
 
-
         public String ProcessResponse(String response)
         {
             ResponseInfo responseInfo = _parser.GetResponseInfo(response);
@@ -24,7 +23,7 @@ namespace MyStore.Client
                     return ListCarsResponseProcessor.Convert(info);
 
                 default:
-                    return "Unknown command";
+                    return "Unknown response received from server";
             }
         }
     }

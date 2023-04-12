@@ -4,51 +4,51 @@ using MyStore.CommonLib;
 
 namespace MyStore.Client
 {
-    internal class InitialProcessor
+    internal class InitialConnectionHandler
     {
+        public event EventHandler<ErrorEventArgs> ErrorOccured;
+
+        public event EventHandler<EventArgs> ConnectedToServer;
+
         private readonly ILogger _logger;
 
         private readonly IMessenger _messenger;
-
-        private readonly IUserInterface _userInterface;
 
         private readonly ServiceCommandBuilder _commandProvider;
 
         private readonly ServiceCommandProcessor _commandProcessor;
 
-        public InitialProcessor(ILogger logger, IMessenger messenger, IUserInterface userInterface)
+        public InitialConnectionHandler(ILogger logger, IMessenger messenger)
         {
             try
             {
                 _logger = logger;
                 _messenger = messenger;
-                _userInterface = userInterface;
                 _commandProvider = new ServiceCommandBuilder();
                 _commandProcessor = new ServiceCommandProcessor();
             }
             catch(Exception ex)
             {
-                _logger.Exception(ex, "Failed to initialize {0}", nameof(InitialProcessor));
+                _logger.Exception(ex, "Failed to initialize {0}", nameof(InitialConnectionHandler));
                 throw;
             }
         }
 
         public async Task<Boolean> InitialConnect()
         {
-            _userInterface.ShowMessage("Welcome to store");
-
             try
             {
                 Boolean connected = await TryConnectAsync();
                 if (!connected)
                 {
+                    OnErrorOccured(null, "Failed to connect to server");
                     return false;
                 }
 
                 var versionMatch = await CheckLibraryVersion();
                 if (!versionMatch)
                 {
-                    _userInterface.ShowMessage("Current client's version doesn't match with server version");
+                    OnErrorOccured(null, "Current client's version doesn't match with server version");
                     _logger.Error("Client and server versions of the CommonLib are different");
                     return false;
                 }
@@ -66,20 +66,17 @@ namespace MyStore.Client
         {
             try
             {
-                _userInterface.ShowMessage("Connecting to server...");
                 Boolean success = await _messenger.ConnectToServerAsync();
                 if (!success)
-                {
-                    _userInterface.ShowMessage("Failed to establish connection to server");
                     return false;
-                }
-                
             }
-            catch
+            catch(Exception ex)
             {
+                OnErrorOccured(ex, "Failed to connect to server");
+                _logger.Exception(ex, "Connection is failed");
                 throw;
             }
-            _userInterface.ShowMessage("Connection is successfull");
+            OnConnectedToServer();
             return true;
         }
 
@@ -94,6 +91,16 @@ namespace MyStore.Client
 
             _logger.Info("Client version: [{0}], server version: [{1}]", clientVersion, serverVersion);
             return clientVersion == serverVersion;
+        }
+
+        protected virtual void OnErrorOccured(Exception ex, String message)
+        {
+            ErrorOccured?.Invoke(this, new ErrorEventArgs(ex, message));
+        }
+
+        protected virtual void OnConnectedToServer()
+        {
+            ConnectedToServer?.Invoke(this, new EventArgs());
         }
     }
 }

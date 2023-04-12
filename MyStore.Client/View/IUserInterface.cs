@@ -12,5 +12,11 @@ namespace MyStore.Client
         void ShowMessage(IEnumerable<String> message);
 
         String GetMessageFromUser();
+
+        void OnCommandHandled(object sender, UserCommandHandledArgs args);
+
+        void OnErrorOccured(object sender, ErrorEventArgs args);
+
+        void OnConnectedToServer(object sender, EventArgs args);
     }
 }
