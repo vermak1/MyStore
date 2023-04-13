@@ -9,12 +9,15 @@ namespace MyStore.Client
 
         public Boolean ConfigExist { get; }
 
-        public ConfigurationStringProvider(String path)
+        public ConfigurationStringProvider()
         {
-            if (path == null)
-                throw new ArgumentNullException(nameof(path));
-
-            _path = path;
+            var args = Environment.GetCommandLineArgs();
+            if (args.Length == 1)
+            {
+                ConfigExist = false;
+                return;
+            }
+            _path = args[1];
             ConfigExist = TryGetConfiguration();
         }
 

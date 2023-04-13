@@ -22,7 +22,7 @@ namespace MyStore.Client
         {
             try
             {
-                _configurator = new Configurator("NonExistentPath.txt");
+                _configurator = new Configurator();
                 _logger = _configurator.GetLogger();
                 _messenger = _configurator.GetMessenger();
                 _userInterface = _configurator.GetUserInterface();

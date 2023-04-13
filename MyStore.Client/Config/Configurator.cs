@@ -14,10 +14,10 @@ namespace MyStore.Client
 
         private readonly ILogger _logger;
 
-        public Configurator(String path)
+        public Configurator()
         {
             _loggerConfig = new LoggerConfigurator();
-            _provider = new ConfigurationStringProvider(path);
+            _provider = new ConfigurationStringProvider();
             if (!_provider.ConfigExist)
                 _logger = _loggerConfig.GetDefaultLogger();
 
