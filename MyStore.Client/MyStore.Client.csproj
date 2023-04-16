@@ -52,7 +52,6 @@
     <Compile Include="View\Containers\ViewCarInfo.cs" />
     <Compile Include="View\Containers\ViewCarsContainer.cs" />
     <Compile Include="View\IUserMessageParser.cs" />
-    <Compile Include="View\OutputFormatter.cs" />
     <Compile Include="View\UserCommand\UserCommandsProvider.cs" />
     <Compile Include="Model\Command\Service\ServiceCommandProcessor.cs" />
     <Compile Include="Model\Command\Service\ServiceCommandBuilder.cs" />
@@ -68,7 +67,6 @@
     <Compile Include="Model\Connection\RetryOptionsHardcodeProvider.cs" />
     <Compile Include="Model\Connection\Socket\SocketMessenger.cs" />
     <Compile Include="View\UserCommand\UserCommandFactory.cs" />
-    <Compile Include="View\UserCommand\UserErrorCommand.cs" />
     <Compile Include="View\UserCommand\EUserCommand.cs" />
     <Compile Include="View\UserCommand\UserExitCommand.cs" />
     <Compile Include="View\UserCommand\UserListAllCarsCommand.cs" />
