@@ -2,9 +2,9 @@
 
 namespace MyStore.Client
 {
-    internal static class UserMessageParser
+    internal class UserMessageParser : IUserMessageParser
     {
-        public static UserCommand GetUserCommandFromInput(String input)
+        public UserCommand GetUserCommandFromInput(String input)
         {
             if (input == null)
                 throw new ArgumentNullException(nameof(input));
@@ -22,7 +22,7 @@ namespace MyStore.Client
             }
         }
 
-        private static String ParseCommandType(String input)
+        private String ParseCommandType(String input)
         {
             return input.ToLower().Split(' ')[0];
         }

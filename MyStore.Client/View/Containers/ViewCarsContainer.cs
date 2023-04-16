@@ -1,21 +1,24 @@
-﻿using MyStore.CommonLib;
-using System;
-using System.Linq;
+﻿using System;
+using System.Collections.Generic;
 using System.Text;
 
 namespace MyStore.Client
 {
-    internal class ListCarsResponseProcessor
+    internal class ViewCarsContainer
     {
-        public static String Convert(ListCarsResponseInfo info)
-        {
-            var cars = info.CarInfos.OrderByDescending(x => x.Year);
+        public List<ViewCarInfo> CarsInfo { get; set; }
 
+        public ViewCarsContainer()
+        {
+            CarsInfo = new List<ViewCarInfo>();
+        }
+        public override string ToString()
+        {
             StringBuilder sb = new StringBuilder();
-            sb.Append("List of available cars:");
+            sb.AppendLine("List of available cars:");
 
             int i = 1;
-            foreach(var car in cars)
+            foreach (var car in CarsInfo)
             {
                 sb.Append($"\n{i}) Brand: {car.Brand}" +
                           $"\n Model: {car.Model}" +
@@ -24,6 +27,7 @@ namespace MyStore.Client
                           $"\n Color: {car.Color}");
                 i++;
             }
+
             return sb.ToString();
         }
     }

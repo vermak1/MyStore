@@ -4,9 +4,9 @@ namespace MyStore.Client
 {
     internal static class UserCommandFactory
     {
-        public static ExitCommand CreateExitCommand()
+        public static UserExitCommand CreateExitCommand()
         {
-            return new ExitCommand()
+            return new UserExitCommand()
             {
                 CommandType = EUserCommand.Exit,
             };

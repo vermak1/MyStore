@@ -9,8 +9,11 @@ namespace MyStore.Client
         {
             try
             {
-                using (MainProcessor main = new MainProcessor())
-                    await main.Start();
+                IUserInterface ui = new ConsoleUserInterface();
+                using (IController controller = new Controller())
+                {
+                    await ui.Run(controller);
+                }
             }
             catch
             {

@@ -1,17 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace MyStore.Client
 {
     internal class ConsoleUserInterface : IUserInterface
     {
+        public IUserMessageParser MessageParser { get; }
+
+        public ConsoleUserInterface()
+        {
+            MessageParser = new UserMessageParser();
+        }
+
         public String GetMessageFromUser()
         {
             Console.WriteLine(">");
             return Console.ReadLine();
         }
 
-        public void ShowMessage(string message)
+        public void ShowMessage(String message)
         {
             if(message == null)
                 throw new ArgumentNullException(nameof(message));
@@ -19,7 +27,7 @@ namespace MyStore.Client
             Console.WriteLine("[{0}]\t{1}", DateTime.Now, message);
         }
 
-        public void ShowMessage(IEnumerable<string> message)
+        public void ShowMessage(IEnumerable<String> message)
         {
             if (message == null)
                 throw new ArgumentNullException(nameof(message));
@@ -28,7 +36,7 @@ namespace MyStore.Client
                 ShowMessage(line);
         }
 
-        public void ShowMessage(string message, params object[] args)
+        public void ShowMessage(String message, params object[] args)
         {
             if (args == null)
             {
@@ -40,28 +48,50 @@ namespace MyStore.Client
             ShowMessage(formatted);
         }
 
-        public void OnCommandHandled(object sender, UserCommandHandledArgs args)
+        public async Task Run(IController controller)
         {
-            if (args == null)
-                throw new ArgumentNullException(nameof(args));
+            ShowMessage("Welcome to Store");
+            UserCommand command = null;
+            do
+            {
+                try
+                {
+                    ShowAvailableCommands();
+                    command = GetCommandFromInput();
+                    switch (command)
+                    {
+                        case UserListAllCarsCommand c:
+                            var response = await controller.GetAllCarsCommand(c);
+                            ShowMessage(response.ToString());
+                            break;
 
-            ShowMessage(args.Message);
+                        case UserExitCommand _:
+                            ShowMessage("ciao");
+                            break;
+
+                        case UserUnknownCommand _:
+                            ShowMessage("Unknown command received");
+                            break;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    ShowMessage(ex.Message);
+                }
+            } while (!(command is UserExitCommand));
         }
 
-        public void OnErrorOccured(object sender, ErrorEventArgs args)
+        public void ShowAvailableCommands()
         {
-            if (args == null)
-                throw new ArgumentNullException(nameof(args));
-
-            ShowMessage(args.Message);
-            if (args.Exception == null)
-                return;
-            ShowMessage(args.Exception.Message);
+            var commands = UserCommandsProvider.GetAvailableCommands();
+            ShowMessage("Enter one of available commands:");
+            ShowMessage(commands);
         }
 
-        public void OnConnectedToServer(object sender, EventArgs args)
+        private UserCommand GetCommandFromInput()
         {
-            ShowMessage("Successfully connected to server");
+            String message = GetMessageFromUser();
+            return MessageParser.GetUserCommandFromInput(message);
         }
     }
 }

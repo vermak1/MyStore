@@ -18,9 +18,9 @@ namespace MyStore.Client
 
         private readonly Socket _socket;
 
-        public SocketMessenger(ILogger logger, ISocketProvider socketProvider, ISocketSettingsProvider settings, IRetryOptionsProvider retryOptions)
+        public SocketMessenger(ISocketProvider socketProvider, ISocketSettingsProvider settings, IRetryOptionsProvider retryOptions)
         {
-            _logger = logger;
+            _logger = Configurator.Instance.GetLogger();
             _retryOptions = retryOptions;
             _settingsProvider = settings;
             try
@@ -59,7 +59,6 @@ namespace MyStore.Client
                         _logger.Info("Successully connected to server {0}:{1}", _settingsProvider.IP, _settingsProvider.Port);
                         return true;
                     }
-
                 }
                 catch (Exception ex)
                 {
@@ -76,6 +75,12 @@ namespace MyStore.Client
             _socket?.Disconnect(true);
         }
 
+        private async Task<Boolean> ReconnectAsync()
+        {
+            DisconnectFromServer();
+            return await ConnectToServerAsync();
+        }
+
         private async Task SendMessageInternalAsync(String message)
         {
             if (String.IsNullOrEmpty(message))
@@ -90,6 +95,8 @@ namespace MyStore.Client
             {
                 _logger.Exception(ex, "Sending message failed to: {0}", _socket.RemoteEndPoint);
                 throw;
+                //if (await ReconnectAsync())
+                    //await SendMessageInternalAsync(message);
             }
         }
 
@@ -105,13 +112,15 @@ namespace MyStore.Client
                     sb.Append(Encoding.UTF8.GetString(buffer.Array, 0, bytes));
                 }
                 while (_socket.Available != 0);
-                return sb.ToString();
             }
             catch (Exception ex)
             {
                 _logger.Exception(ex, "Receiving message failed from: {0}", _socket.RemoteEndPoint);
                 throw;
+                //if (await ReconnectAsync())
+                    //await ReceiveMessageInternalAsync();
             }
+            return sb.ToString();
         }
     }
 }

@@ -2,7 +2,7 @@
 
 namespace MyStore.Client
 {
-    internal class ExitCommand : UserCommand
+    internal class UserExitCommand : UserCommand
     {
     }
 }
