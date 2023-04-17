@@ -45,11 +45,6 @@ namespace MyStore.Client
             }
         }
 
-        private async Task<Boolean> TryConnectAsync()
-        {
-            return false;
-        }
-
         private async Task CheckLibraryVersion()
         {
             Int32 clientVersion = LibraryInfo.Version;
