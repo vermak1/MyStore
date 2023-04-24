@@ -1,19 +1,13 @@
-﻿using System;
+﻿using System.Net;
 
 namespace MyStore.Server
 {
-    internal class ConnectionProvider : IDisposable
+    internal class ConnectionProvider : IConnectionConfigurator
     {
-        private readonly IConnectionConfigurator _connectionConfigurator;
-
-        public ConnectionProvider(ILogger logger)
+        private readonly IServerSocketSettingsProvider _settings;
+        public ConnectionProvider()
         {
-            _connectionConfigurator = new SocketConnectionConfigurator(logger);
-        }
-
-        public IServerConnectionHolder GetConnectionHolder()
-        {
-            return GetDefaultConnectionHolder();
+            _settings = new SocketSettingsHardcodeProvider();
         }
 
         public IClientAwaiter GetClientAwaiter()
@@ -21,19 +15,10 @@ namespace MyStore.Server
             return GetDefaultClientAwaiter();
         }
 
-        private IServerConnectionHolder GetDefaultConnectionHolder()
-        {
-            return _connectionConfigurator.GetConnectionHolder();
-        }
-
         private IClientAwaiter GetDefaultClientAwaiter()
         {
-            return _connectionConfigurator.GetClientAwaiter();
-        }
-
-        public void Dispose()
-        {
-            _connectionConfigurator?.Dispose();
+            IPEndPoint endPoint = new IPEndPoint(IPAddress.Loopback, _settings.Port);
+            return new TcpListenerClientAwaiter(endPoint);
         }
     }
 }

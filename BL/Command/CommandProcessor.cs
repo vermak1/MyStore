@@ -1,30 +1,35 @@
 ﻿using System;
-using MyStore.CommonLib;
 using System.Threading.Tasks;
 
 namespace MyStore.Server
 {
     internal class CommandProcessor
     {
-        private readonly CommandParser _parser;
+        private readonly ClientCommandHandler _handler;
 
-        public CommandProcessor()
+        private readonly IMessenger _messenger;
+        public CommandProcessor(IMessenger messenger)
         {
-            _parser = new CommandParser();
+            _handler = new ClientCommandHandler();
+            _messenger = messenger;
         }
-        public async Task<String> HandleRequest(String command)
+
+        public async Task<Boolean> WaitRequestAndResponse()
         {
-            CommandInfo commandInfo = _parser.GetCommandInfo(command);
-
-            switch (commandInfo.CommandType)
+            try
             {
-                case ECommandType.ListAllCars:
-                    ListCarsCommandHandler handler = new ListCarsCommandHandler();
-                    return await handler.GenerateResponse();
+                var command = await _messenger.ReceiveMessageAsync();
+                var t = _handler.ParseCommandAndGenerateResponse(command);
+                Log.Info("Command [{0}] was requested", command);
 
-
-                default:
-                    return "Unknown command";
+                String response = await t;
+                await _messenger.SendMessageAsync(response);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Log.Exception(ex, "Failed to wait and response to client");
+                return false;
             }
         }
     }

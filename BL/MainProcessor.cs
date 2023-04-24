@@ -1,88 +1,35 @@
 ﻿using System;
-using System.Threading.Tasks;
+using System.Threading;
 
 namespace MyStore.Server
 {
     internal class MainProcessor
     {
-        private readonly ILogger _logger;
-
-        private readonly ServiceCommandProcessor _serviceCommandProcessor;
-
-        private readonly ServiceCommandBuilder _serviceCommandBuider;
-
-        private readonly CommandProcessor _commandProcessor;
-
-        public MainProcessor()
+        public void StartServer()
         {
             try
             {
-                _logger = new ServerLogger("MyStore.Server.log");
-                _serviceCommandBuider = new ServiceCommandBuilder();
-                _serviceCommandProcessor = new ServiceCommandProcessor();
-                _commandProcessor = new CommandProcessor();
-            }
-            catch(Exception ex)
-            {
-                _logger?.Exception(ex, "Failed to initialize {0}", nameof(MainProcessor));
-                throw;
-            }
-
-
-        }
-        public async Task StartServer()
-        {
-            while (true)
-            {
-                try
+                ConnectionProvider connectionProvider = new ConnectionProvider();
+                IClientAwaiter clientAwaiter = connectionProvider.GetClientAwaiter();
+                    
+                using (AutoResetEvent wh = new AutoResetEvent(false))
                 {
-                    using (ConnectionProvider connectionProvider = new ConnectionProvider(_logger))
+                    ThreadPool.GetAvailableThreads(out Int32 availableThreads, out Int32 availableIOThreads);
+                    while (availableThreads > 0 && availableIOThreads > 0)
                     {
-                        var serverConnection = connectionProvider.GetConnectionHolder();
-                        serverConnection.OpenConnection();
-                        IClientAwaiter clientAwaiter = connectionProvider.GetClientAwaiter();
-                        using (IClientContextHolder clientContext = clientAwaiter.WaitingForClient())
+                        ThreadPool.QueueUserWorkItem(async (o) =>
                         {
-                            await InternalCycle(clientContext);
-                        }
+                            await clientAwaiter.WaitingAndProcessClientAsync(wh);
+                        });
+                        wh.WaitOne();
+                        ThreadPool.GetAvailableThreads(out availableThreads, out availableIOThreads);
+                        Log.Info("Available threads: {0}, available IO threads: {1}", availableThreads, availableIOThreads);
                     }
                 }
-                catch (Exception ex)
-                {
-                    _logger.Exception(ex, "Fail within method {0}", nameof(StartServer));
-                }
             }
-        }
-
-        private async Task InternalCycle(IClientContextHolder context)
-        {
-            try
+            catch (Exception ex)
             {
-                var request = await context.Messenger.ReceiveMessageAsync();
-                Boolean correctServiceCommand = _serviceCommandProcessor.TryGetLibVersionCommand(request);
-
-                if (!correctServiceCommand)
-                {
-                    _logger.Error("Wrong command provided: [{0}]", request);
-                    return;
-                }
-
-                String responseWithVersion = _serviceCommandBuider.BuildReturnVersionCommand();
-                await context.Messenger.SendMessageAsync(responseWithVersion);
-
-                while (true)
-                {
-                    var command = await context.Messenger.ReceiveMessageAsync();
-                    var t = _commandProcessor.HandleRequest(command);
-                    _logger.Info("Command [{0}] was requested", command);
-                    
-                    String response = await t;
-                    await context.Messenger.SendMessageAsync(response);
-                }
-            }
-            catch(Exception ex) 
-            {
-                _logger.Exception(ex, "Fail within internal cycle");
+                Log.Exception(ex, "Fail within method {0}", nameof(StartServer));
                 throw;
             }
         }

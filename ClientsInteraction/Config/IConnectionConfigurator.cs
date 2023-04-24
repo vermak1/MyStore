@@ -2,10 +2,8 @@
 
 namespace MyStore.Server
 {
-    internal interface IConnectionConfigurator : IDisposable
+    internal interface IConnectionConfigurator
     {
-        IServerConnectionHolder GetConnectionHolder();
-
         IClientAwaiter GetClientAwaiter();
     }
 }

@@ -7,6 +7,6 @@ namespace MyStore.Server
     {
         Task<String> ReceiveMessageAsync();
 
-        Task SendMessageAsync(String message);
+        Task SendMessageAsync(string message);
     }
 }

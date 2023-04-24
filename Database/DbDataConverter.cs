@@ -1,35 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Threading.Tasks;
-using MyStore.Server.Database;
 using MyStore.CommonLib;
 
 namespace MyStore.Server
 {
-    internal class SQLCars : ICarRepository
+    internal class DbDataConverter
     {
-        private readonly SQLStoredProcedureExecutor _executor;
-
-        public SQLCars()
-        {
-            _executor = new SQLStoredProcedureExecutor();
-        }
-
-        public async Task<List<CarInfo>> ListCarsAsync()
-        {
-            using (var connection = await SQLConnectionsFactory.GetConnectionAsync())
-            {
-                DataSet data = await _executor.RunStoredProcedureReadAsync("ListAllCars", new Dictionary<string, string>(), connection);
-                List<CarInfo> list = ConvertToCarInfo(data);
-
-                if(list.Count == 0)
-                    Console.WriteLine("There are not cars available");
-                return list;
-            }
-        }
-
-        private List<CarInfo> ConvertToCarInfo(DataSet data)
+        public static List<CarInfo> ConvertToCarInfo(DataSet data)
         {
             if (data == null)
                 throw new ArgumentNullException(nameof(data));
@@ -37,7 +15,7 @@ namespace MyStore.Server
             List<CarInfo> list = new List<CarInfo>();
             if (data.Tables[0].Rows.Count == 0)
             {
-                Console.WriteLine("There is not result parsed from DataSet");
+                Log.Error("There is not result parsed from DataSet");
                 return list;
             }
 

@@ -12,9 +12,10 @@ namespace MyStore.Server
             _parser = new ServiceCommandParser();
         }
 
-        public Boolean TryGetLibVersionCommand(String request)
+        public Boolean TryGetLibVersionCommand(String request, out Int32 version)
         {
             var command = _parser.GetLibVersionCommand(request);
+            version = command.Version;
             if (command.ServiceCommand != EServiceCommand.GetLibraryVersion)
                 return false;
 

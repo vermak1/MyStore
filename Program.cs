@@ -1,19 +1,19 @@
 ﻿using System;
-using System.Threading.Tasks;
 
 namespace MyStore.Server
 {
     internal class Program
     {
-        static async Task Main()
+        static void Main()
         {
             try
             {
                 MainProcessor main = new MainProcessor();
-                await main.StartServer();
+                main.StartServer();
             }
-            catch
+            catch(Exception ex)
             {
+                Log.Exception(ex, "Application is closed with code 1");
                 Environment.Exit(1);
             }
         }

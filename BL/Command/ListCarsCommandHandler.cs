@@ -6,26 +6,25 @@ namespace MyStore.Server
 {
     internal class ListCarsCommandHandler
     {
-        private readonly Car _cars;
+        private readonly ICarRepository _carRepository;
 
         private readonly ResponseFactory _factory;
 
         public ListCarsCommandHandler()
         {
             _factory = new ResponseFactory();
-            _cars = Car.CreateForSql();
+            _carRepository = new CarRepository();
         }
         public async Task<String> GenerateResponse()
         {
-            var t = _cars.ListCarsAsync();
+            var t = _carRepository.ListCarsAsync();
             ListCarsResponseInfo info = new ListCarsResponseInfo()
             {
                 CarInfos = await t,
                 Type = ECommandType.ListAllCars
             };
-
-            String result = _factory.ResponseListAllCars(info);
-            return result;
+            
+            return _factory.ResponseListAllCars(info);
         }
     }
 }
