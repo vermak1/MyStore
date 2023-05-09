@@ -44,7 +44,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Controller\IController.cs" />
-    <Compile Include="Controller\ViewDTOCreator.cs" />
+    <Compile Include="Controller\User\States\AuthorizedUser.cs" />
+    <Compile Include="Controller\User\States\IUserStateSwitcher.cs" />
+    <Compile Include="Controller\User\States\UnauthorizedUser.cs" />
+    <Compile Include="Controller\User\UserContext.cs" />
+    <Compile Include="Controller\User\States\UserStateBase.cs" />
     <Compile Include="Model\Command\ServerCommandsConstructor.cs" />
     <Compile Include="Model\Connection\TcpClient\TcpClientMessenger.cs" />
     <Compile Include="Model\IServerInteractor.cs" />
@@ -52,7 +56,6 @@
     <Compile Include="View\Containers\ViewCarInfo.cs" />
     <Compile Include="View\Containers\ViewCarsContainer.cs" />
     <Compile Include="View\IUserMessageParser.cs" />
-    <Compile Include="View\UserCommand\UserCommandsProvider.cs" />
     <Compile Include="Model\Command\Service\ServiceCommandProcessor.cs" />
     <Compile Include="Model\Command\Service\ServiceCommandBuilder.cs" />
     <Compile Include="Model\InitialConnectionHandler.cs" />
@@ -60,17 +63,26 @@
     <Compile Include="Model\Response\ResponseConverter.cs" />
     <Compile Include="Config\ConfigurationStringProvider.cs" />
     <Compile Include="Config\Configurator.cs" />
-    <Compile Include="Config\LoggerConfigurator.cs" />
-    <Compile Include="Config\MessengerConfiguration.cs" />
+    <Compile Include="Config\LoggerFactory.cs" />
+    <Compile Include="Config\MessengerFactory.cs" />
     <Compile Include="Model\Connection\IMessenger.cs" />
     <Compile Include="Model\Connection\IRetryOptionsProvider.cs" />
     <Compile Include="Model\Connection\RetryOptionsHardcodeProvider.cs" />
-    <Compile Include="View\UserCommand\UserCommandFactory.cs" />
-    <Compile Include="View\UserCommand\EUserCommand.cs" />
-    <Compile Include="View\UserCommand\UserExitCommand.cs" />
-    <Compile Include="View\UserCommand\UserListAllCarsCommand.cs" />
-    <Compile Include="View\UserCommand\UserCommand.cs" />
-    <Compile Include="View\UserCommand\UserUnknownCommand.cs" />
+    <Compile Include="View\UserCommand\Command\UserCommandFactory.cs" />
+    <Compile Include="View\UserCommand\Command\EUserCommand.cs" />
+    <Compile Include="View\UserCommand\Command\UserExitCommand.cs" />
+    <Compile Include="View\UserCommand\Command\UserListAllCarsCommand.cs" />
+    <Compile Include="View\UserCommand\Command\UserCommand.cs" />
+    <Compile Include="View\UserCommand\Command\UserLoginCommand.cs" />
+    <Compile Include="View\UserCommand\Command\UserLogoffCommand.cs" />
+    <Compile Include="View\UserCommand\Command\UserUnknownCommand.cs" />
+    <Compile Include="View\UserCommand\Result\CarListResult.cs" />
+    <Compile Include="View\UserCommand\Result\EResultStatus.cs" />
+    <Compile Include="View\UserCommand\Result\ErrorResult.cs" />
+    <Compile Include="View\UserCommand\Result\InvalidCommandResult.cs" />
+    <Compile Include="View\UserCommand\Result\IResult.cs" />
+    <Compile Include="View\UserCommand\Result\ResultFactory.cs" />
+    <Compile Include="View\UserCommand\Result\SuccessResult.cs" />
     <Compile Include="View\UserMessageParser.cs" />
     <Compile Include="Log\FileLogger.cs" />
     <Compile Include="Log\ILogger.cs" />

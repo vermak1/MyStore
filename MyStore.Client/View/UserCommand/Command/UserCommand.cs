@@ -4,6 +4,6 @@ namespace MyStore.Client
 {
     internal abstract class UserCommand
     {
-        public EUserCommand CommandType { get; set; }
+        public virtual EUserCommand CommandType { get; set; }
     }
 }

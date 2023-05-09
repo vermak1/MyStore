@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using MyStore.CommonLib;
 
 namespace MyStore.Client
 {
@@ -7,14 +8,11 @@ namespace MyStore.Client
     {
         private readonly ILogger _logger;
 
-        private readonly ViewDTOCreator _dtoCreator;
-
         private readonly IServerInteractor _serverInteractor;
 
         public Controller()
         {
             _logger = Configurator.Instance.GetLogger();
-            _dtoCreator = new ViewDTOCreator();
             _serverInteractor = new ServerInteractor();
         }
 
@@ -23,11 +21,18 @@ namespace MyStore.Client
             _serverInteractor?.Dispose();
         }
 
-        public async Task<ViewCarsContainer> GetAllCarsCommand(UserListAllCarsCommand c)
+        public async Task<IResult> GetAllCarsCommand(UserListAllCarsCommand c)
         {
             _logger.Info("Got command [{0}] from user", c.CommandType);
-            var response = await _serverInteractor.GetListCars();
-            return _dtoCreator.ConvertCarList(response);
+            try
+            {
+                ListCarsResponseInfo response = await _serverInteractor.GetListCars();
+                return ResultFactory.CarListResult(EResultStatus.Success, response);
+            }
+            catch(Exception ex)
+            {
+                return ResultFactory.Error(String.Format("Couldn't get result\nError: {0}", ex.Message));
+            }
         }
     }
 }

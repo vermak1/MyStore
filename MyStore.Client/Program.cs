@@ -10,10 +10,11 @@ namespace MyStore.Client
         {
             try
             {
-                IUserInterface ui = new ConsoleUserInterface();
                 using (IController controller = new Controller())
                 {
-                    await ui.Run(controller);
+                    UserContext context = new UserContext(controller);
+                    IUserInterface ui = new ConsoleUserInterface(context);
+                    await ui.Run();
                 }
             }
             catch(Exception ex)

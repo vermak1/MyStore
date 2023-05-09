@@ -6,8 +6,7 @@ namespace MyStore.Client
 {
     internal interface IUserInterface
     {
-        Task Run(IController controller);
-        IUserMessageParser MessageParser { get; }
+        Task Run();
 
         void ShowMessage(String message);
 

@@ -2,9 +2,9 @@
 
 namespace MyStore.Client
 {
-    internal class LoggerConfigurator
+    internal static class LoggerFactory
     {
-        public ILogger GetDefaultLogger()
+        public static ILogger GetDefaultLogger()
         {
             return new FileLogger();
         }

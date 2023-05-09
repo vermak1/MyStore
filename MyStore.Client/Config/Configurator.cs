@@ -8,7 +8,7 @@ namespace MyStore.Client
 
         private static Configurator _instance;
 
-        public static Configurator Instance 
+        public static Configurator Instance
         { get
             {
                 if (_instance != null)
@@ -23,26 +23,19 @@ namespace MyStore.Client
         }
         private readonly ConfigurationStringProvider _provider;
 
-        private readonly LoggerConfigurator _loggerConfig;
-
-        private readonly MessengerConfiguration _messengerConfig;
-
         private readonly ILogger _logger;
 
         private Configurator()
         {
-            _loggerConfig = new LoggerConfigurator();
             _provider = new ConfigurationStringProvider();
             if (!_provider.ConfigExist)
-                _logger = _loggerConfig.GetDefaultLogger();
-
-            _messengerConfig = new MessengerConfiguration();
+                _logger = LoggerFactory.GetDefaultLogger();
         }
 
         public IMessenger GetMessenger()
         {
             if (!_provider.ConfigExist)
-                return _messengerConfig.GetTcpClientMessenger();
+                return MessengerFactory.GetTcpClientMessenger();
 
             throw new NotImplementedException();
         }
@@ -52,7 +45,7 @@ namespace MyStore.Client
             if (_logger != null)
                 return _logger;
             if (!_provider.ConfigExist)
-                return _loggerConfig.GetDefaultLogger();
+                return LoggerFactory.GetDefaultLogger();
 
             throw new NotImplementedException();
         }

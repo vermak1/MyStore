@@ -14,11 +14,15 @@ namespace MyStore.Client
             switch(command)
             {
                 case "exit":
-                    return UserCommandFactory.CreateExitCommand();
+                    return UserCommandFactory.ExitCommand();
                 case "listallcars":
-                    return UserCommandFactory.CreateListCarsCommand();
+                    return UserCommandFactory.ListCarsCommand();
+                case "login":
+                    return UserCommandFactory.LoginCommand();
+                case "logoff":
+                    return UserCommandFactory.LogoffCommand();
                 default:
-                    return UserCommandFactory.CreateUnknownCommand();
+                    return UserCommandFactory.UnknownCommand();
             }
         }
 

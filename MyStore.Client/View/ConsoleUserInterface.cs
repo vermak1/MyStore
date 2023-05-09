@@ -6,11 +6,14 @@ namespace MyStore.Client
 {
     internal class ConsoleUserInterface : IUserInterface
     {
-        public IUserMessageParser MessageParser { get; }
+        private readonly IUserMessageParser _messageParser;
 
-        public ConsoleUserInterface()
+        private readonly UserContext _userContext;
+
+        public ConsoleUserInterface(UserContext context)
         {
-            MessageParser = new UserMessageParser();
+            _userContext = context;
+            _messageParser = new UserMessageParser();
         }
 
         public String GetMessageFromUser()
@@ -48,42 +51,40 @@ namespace MyStore.Client
             ShowMessage(formatted);
         }
 
-        public async Task Run(IController controller)
+        public async Task Run()
         {
             ShowMessage("Welcome to Store");
-            UserCommand command = null;
-            do
+            while (true)
             {
                 try
                 {
                     ShowAvailableCommands();
-                    command = GetCommandFromInput();
-                    switch (command)
+                    UserCommand command = GetCommandFromInput();
+                    if (command is UserExitCommand)
                     {
-                        case UserListAllCarsCommand c:
-                            var response = await controller.GetAllCarsCommand(c);
-                            ShowMessage(response.ToString());
-                            break;
-
-                        case UserExitCommand _:
-                            ShowMessage("ciao");
-                            break;
-
-                        case UserUnknownCommand _:
-                            ShowMessage("Unknown command received");
-                            break;
+                        ShowMessage("Ciao");
+                        return;
                     }
+
+                    if (command is UserUnknownCommand)
+                    {
+                        ShowMessage("Unknown command received");
+                        continue;
+                    }
+                    var t = await _userContext.ProcessCommand(command);
+                    ShowMessage($"{t.Message}\n{t.Content}");
                 }
                 catch (Exception ex)
                 {
                     ShowMessage(ex.Message);
                 }
-            } while (!(command is UserExitCommand));
+            }
+            
         }
 
         public void ShowAvailableCommands()
         {
-            var commands = UserCommandsProvider.GetAvailableCommands();
+            var commands = _userContext.GetAvailableCommands();
             ShowMessage("Enter one of available commands:");
             ShowMessage(commands);
         }
@@ -91,7 +92,7 @@ namespace MyStore.Client
         private UserCommand GetCommandFromInput()
         {
             String message = GetMessageFromUser();
-            return MessageParser.GetUserCommandFromInput(message);
+            return _messageParser.GetUserCommandFromInput(message);
         }
     }
 }

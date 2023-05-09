@@ -5,6 +5,6 @@ namespace MyStore.Client
 {
     internal interface IController : IDisposable
     {
-        Task<ViewCarsContainer> GetAllCarsCommand(UserListAllCarsCommand command);
+        Task<IResult> GetAllCarsCommand(UserListAllCarsCommand command);
     }
 }

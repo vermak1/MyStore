@@ -6,6 +6,7 @@
         Exit = 0,
         CreateUser = 1,
         Login = 2,
-        ListAllCars = 3
+        Logoff = 3,
+        ListAllCars = 4
     }
 }
