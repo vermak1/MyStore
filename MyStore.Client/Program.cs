@@ -5,6 +5,7 @@ namespace MyStore.Client
 {
     internal class Program
     {
+        private static readonly ILogger _logger = Configurator.Instance.GetLogger();
         static async Task Main()
         {
             try
@@ -15,8 +16,9 @@ namespace MyStore.Client
                     await ui.Run(controller);
                 }
             }
-            catch
+            catch(Exception ex)
             {
+                _logger.Exception(ex, "Application is closed");
                 Environment.Exit(1);
             }
             
