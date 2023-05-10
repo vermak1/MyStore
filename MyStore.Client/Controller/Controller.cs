@@ -23,7 +23,7 @@ namespace MyStore.Client
 
         public async Task<IResult> GetAllCarsCommand(UserListAllCarsCommand c)
         {
-            _logger.Info("Got command [{0}] from user", c.CommandType);
+            _logger.Info("Command [{0}] received from user", c.CommandType);
             try
             {
                 ListCarsResponseInfo response = await _serverInteractor.GetListCars();

@@ -53,8 +53,6 @@
     <Compile Include="Model\Connection\TcpClient\TcpClientMessenger.cs" />
     <Compile Include="Model\IServerInteractor.cs" />
     <Compile Include="Model\ServerInteractor.cs" />
-    <Compile Include="View\Containers\ViewCarInfo.cs" />
-    <Compile Include="View\Containers\ViewCarsContainer.cs" />
     <Compile Include="View\IUserMessageParser.cs" />
     <Compile Include="Model\Command\Service\ServiceCommandProcessor.cs" />
     <Compile Include="Model\Command\Service\ServiceCommandBuilder.cs" />
