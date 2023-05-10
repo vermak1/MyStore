@@ -12,8 +12,11 @@ namespace MyStore.Client
         private readonly List<UserStateBase> _allStates;
 
         private readonly IController _controller;
+
+        private readonly ILogger _logger;
         public UserContext(IController controller)
         {
+            _logger = Configurator.Instance.GetLogger();
             _allStates = new List<UserStateBase>
             {
                 new UnauthorizedUser(this),
@@ -35,9 +38,9 @@ namespace MyStore.Client
 
         public async Task<IResult> ProcessCommand(UserCommand command)
         {
+            _logger.Info("Command [{0}] received from user", command.CommandType);
             if (!_currentState.IsCommandValidForState(command))
                 return ResultFactory.InvalidForState();
-
             IResult result;
             switch (command)
             {
