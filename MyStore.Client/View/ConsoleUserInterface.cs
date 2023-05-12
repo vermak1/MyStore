@@ -6,14 +6,14 @@ namespace MyStore.Client
 {
     internal class ConsoleUserInterface : IUserInterface
     {
-        private readonly IUserMessageParser _messageParser;
+        private readonly IUserCommandGenerator _commandGenerator;
 
         private readonly UserContext _userContext;
 
         public ConsoleUserInterface(UserContext context)
         {
             _userContext = context;
-            _messageParser = new UserMessageParser();
+            _commandGenerator = new UserCommandGenerator();
         }
 
         public String GetMessageFromUser()
@@ -54,23 +54,12 @@ namespace MyStore.Client
         public async Task Run()
         {
             ShowMessage("Welcome to Store");
-            while (true)
+            while (!_userContext.IsExitRequested)
             {
                 try
                 {
                     ShowAvailableCommands();
                     UserCommand command = GetCommandFromInput();
-                    if (command is UserExitCommand)
-                    {
-                        ShowMessage("Ciao");
-                        return;
-                    }
-
-                    if (command is UserUnknownCommand)
-                    {
-                        ShowMessage("Unknown command received");
-                        continue;
-                    }
                     var t = await _userContext.ProcessCommand(command);
                     ShowMessage($"{t.Message}\n{t.Content}");
                 }
@@ -92,7 +81,7 @@ namespace MyStore.Client
         private UserCommand GetCommandFromInput()
         {
             String message = GetMessageFromUser();
-            return _messageParser.GetUserCommandFromInput(message);
+            return _commandGenerator.GetUserCommandFromInput(message);
         }
     }
 }

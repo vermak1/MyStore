@@ -7,6 +7,8 @@ namespace MyStore.Client
 {
     internal class UserContext : IUserStateSwitcher
     {
+        public Boolean IsExitRequested { get; private set; }
+
         private UserStateBase _currentState;
 
         private readonly List<UserStateBase> _allStates;
@@ -39,8 +41,18 @@ namespace MyStore.Client
         public async Task<IResult> ProcessCommand(UserCommand command)
         {
             _logger.Info("Command [{0}] received from user", command.CommandType);
+            if (command.CommandType == EUserCommand.Exit)
+            {
+                IsExitRequested = true;
+                return ResultFactory.Exit();
+            }
+
+            if (command.CommandType == EUserCommand.Unknown)
+                return ResultFactory.UnknownCommand();
+
             if (!_currentState.IsCommandValidForState(command))
                 return ResultFactory.InvalidForState();
+
             IResult result;
             switch (command)
             {

@@ -2,7 +2,7 @@
 
 namespace MyStore.Client
 {
-    internal interface IUserMessageParser
+    internal interface IUserCommandGenerator
     {
         UserCommand GetUserCommandFromInput(String input);
     }

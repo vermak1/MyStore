@@ -53,7 +53,7 @@
     <Compile Include="Model\Connection\TcpClient\TcpClientMessenger.cs" />
     <Compile Include="Model\IServerInteractor.cs" />
     <Compile Include="Model\ServerInteractor.cs" />
-    <Compile Include="View\IUserMessageParser.cs" />
+    <Compile Include="View\IUserCommandGenerator.cs" />
     <Compile Include="Model\Command\Service\ServiceCommandProcessor.cs" />
     <Compile Include="Model\Command\Service\ServiceCommandBuilder.cs" />
     <Compile Include="Model\InitialConnectionHandler.cs" />
@@ -66,6 +66,7 @@
     <Compile Include="Model\Connection\IMessenger.cs" />
     <Compile Include="Model\Connection\IRetryOptionsProvider.cs" />
     <Compile Include="Model\Connection\RetryOptionsHardcodeProvider.cs" />
+    <Compile Include="View\UserCommand\Command\CommandTypeMapper.cs" />
     <Compile Include="View\UserCommand\Command\UserCommandFactory.cs" />
     <Compile Include="View\UserCommand\Command\EUserCommand.cs" />
     <Compile Include="View\UserCommand\Command\UserExitCommand.cs" />
@@ -77,11 +78,12 @@
     <Compile Include="View\UserCommand\Result\CarListResult.cs" />
     <Compile Include="View\UserCommand\Result\EResultStatus.cs" />
     <Compile Include="View\UserCommand\Result\ErrorResult.cs" />
-    <Compile Include="View\UserCommand\Result\InvalidCommandResult.cs" />
+    <Compile Include="View\UserCommand\Result\ExitResult.cs" />
+    <Compile Include="View\UserCommand\Result\InvalidCommandForStateResult.cs" />
     <Compile Include="View\UserCommand\Result\IResult.cs" />
     <Compile Include="View\UserCommand\Result\ResultFactory.cs" />
     <Compile Include="View\UserCommand\Result\SuccessResult.cs" />
-    <Compile Include="View\UserMessageParser.cs" />
+    <Compile Include="View\UserCommandGenerator.cs" />
     <Compile Include="Log\FileLogger.cs" />
     <Compile Include="Log\ILogger.cs" />
     <Compile Include="Model\Connection\Socket\ISocketProvider.cs" />
@@ -92,6 +94,7 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Model\Connection\Socket\SocketSettingsHardcodeProvider.cs" />
+    <Compile Include="View\UserCommand\Result\UnknownCommandResult.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

@@ -2,7 +2,7 @@
 
 namespace MyStore.Client
 {
-    internal class InvalidCommandResult : IResult
+    internal class InvalidCommandForStateResult : IResult
     {
         public EResultStatus Status => EResultStatus.Warning;
 

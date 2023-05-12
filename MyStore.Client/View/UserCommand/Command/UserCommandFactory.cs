@@ -4,27 +4,48 @@ namespace MyStore.Client
 {
     internal static class UserCommandFactory
     {
-        public static UserExitCommand ExitCommand()
+        public static UserCommand CreateUserCommand(Tuple<String, String[]> commandTypeAndArgs)
+        {
+            EUserCommand commandType = CommandTypeMapper.GetCommandType(commandTypeAndArgs.Item1);
+            switch (commandType)
+            {
+                case EUserCommand.Exit:
+                    return ExitCommand();
+                case EUserCommand.ListAllCars:
+                    return ListCarsCommand(commandTypeAndArgs.Item2);
+                case EUserCommand.Login:
+                    return LoginCommand(commandTypeAndArgs.Item2);
+                case EUserCommand.Logoff:
+                    return LogoffCommand();
+                default:
+                    return UnknownCommand();
+            }
+        }
+
+        private static UserExitCommand ExitCommand()
         {
             return new UserExitCommand();
         }
 
-        public static UserCommand ListCarsCommand() 
+        private static UserListAllCarsCommand ListCarsCommand(String[] args)
         {
-            return new UserListAllCarsCommand();
+            if (args.Length == 0) 
+                return new UserListAllCarsCommand();
+
+            throw new NotImplementedException();
         }
 
-        public static UserCommand UnknownCommand()
+        private static UserUnknownCommand UnknownCommand()
         {
             return new UserUnknownCommand();
         }
 
-        public static UserCommand LoginCommand()
+        private static UserLoginCommand LoginCommand(String[] loginAndPass)
         {
             return new UserLoginCommand();
         }
 
-        public static UserCommand LogoffCommand()
+        private static UserLogoffCommand LogoffCommand()
         {
             return new UserLogoffCommand();
         }

@@ -8,7 +8,7 @@ namespace MyStore.Client
     {
         public static IResult InvalidForState()
         {
-            return new InvalidCommandResult();
+            return new InvalidCommandForStateResult();
         }
 
         public static IResult CarListResult(EResultStatus status, ListCarsResponseInfo info)
@@ -51,6 +51,16 @@ namespace MyStore.Client
             {
                 Message = message
             };
+        }
+
+        public static IResult Exit()
+        {
+            return new ExitResult();
+        }
+
+        public static IResult UnknownCommand() 
+        {
+            return new UnknownCommandResult();
         }
     }
 }
