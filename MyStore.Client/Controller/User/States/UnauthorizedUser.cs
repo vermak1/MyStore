@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 
 namespace MyStore.Client
 {
@@ -7,12 +6,13 @@ namespace MyStore.Client
     {
         public UnauthorizedUser(IUserStateSwitcher stateSwitcher) : base(stateSwitcher)
         {
-            VALID_COMMANDS = new EUserCommand[]
-            {
-                EUserCommand.Login,
-                EUserCommand.CreateUser
-            };
         }
+
+        protected override EUserCommand[] VALID_COMMANDS => new EUserCommand[] 
+        {
+            EUserCommand.Login,
+            EUserCommand.CreateUser
+        };
 
         public override void ChangeStateIfNeeded(UserCommand command, IResult result)
         {

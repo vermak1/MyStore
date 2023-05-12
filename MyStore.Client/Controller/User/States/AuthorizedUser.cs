@@ -6,12 +6,13 @@ namespace MyStore.Client
     {
         public AuthorizedUser(IUserStateSwitcher stateSwitcher) : base(stateSwitcher)
         {
-            VALID_COMMANDS = new EUserCommand[]
-            {
-                EUserCommand.ListAllCars,
-                EUserCommand.Logoff,
-            };
         }
+
+        protected override EUserCommand[] VALID_COMMANDS => new EUserCommand[]
+        {
+            EUserCommand.Logoff,
+            EUserCommand.ListAllCars
+        };
 
         public override void ChangeStateIfNeeded(UserCommand command, IResult result)
         {

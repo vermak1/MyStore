@@ -8,7 +8,7 @@ namespace MyStore.Client
     {
         protected readonly IUserStateSwitcher _stateSwitcher;
 
-        protected EUserCommand[] VALID_COMMANDS { get; set; }
+        protected abstract EUserCommand[] VALID_COMMANDS { get; }
 
         public UserStateBase(IUserStateSwitcher stateSwitcher)
         {
