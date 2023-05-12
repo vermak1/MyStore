@@ -46,8 +46,6 @@ namespace MyStore.Client
                 }
             }
         }
-
-        private Boolean WasConnected;
         public TcpClientMessenger(IRetryOptionsProvider retryOptions, ISocketSettingsProvider settings)
         {
             try
@@ -55,7 +53,6 @@ namespace MyStore.Client
                 _settingsProvider = settings;
                 _retryOptions = retryOptions;
                 _logger = Configurator.Instance.GetLogger();
-                _tcpClient = new TcpClient();
             }
             catch (Exception ex)
             {
@@ -71,12 +68,8 @@ namespace MyStore.Client
 
         public async Task<Boolean> ConnectToServerAsync()
         {
-            if (IsConnectedNow && WasConnected)
+            if (!TryCreateClient())
                 return false;
-
-            if (WasConnected && !IsConnectedNow)
-                RecreateClient();
-
             _logger.Info("Trying to connect to server {0}:{1}", _settingsProvider.IP, _settingsProvider.Port);
             for (int i = 0; i < _retryOptions.RetryCount; i++)
             {
@@ -86,7 +79,6 @@ namespace MyStore.Client
                     if (_tcpClient.Connected)
                     {
                         _logger.Info("Successully connected to server {0}:{1}", _settingsProvider.IP, _settingsProvider.Port);
-                        WasConnected = true;
                         return true;
                     }
                 }
@@ -99,16 +91,22 @@ namespace MyStore.Client
             return true;
         }
 
-        private void RecreateClient()
+        private Boolean TryCreateClient()
         {
-            DisconnectFromServer();
-            _logger.Info("Trying to recreate TcpClient and reconnect...");
+            if (IsConnectedNow)
+                return false;
+
+            if (_tcpClient != null)
+                DisconnectFromServer();
+            
+            _logger.Info("Creating new Tcp Client...");
             _tcpClient = new TcpClient();
+            return true;
         }
 
         public void DisconnectFromServer()
         {
-            _logger.Info("Disconnecting from server {0}:{1}", _settingsProvider.IP, _settingsProvider.Port);
+            _logger.Info("Connection was broken, disconnecting from server {0}:{1} and dispose tcp client", _settingsProvider.IP, _settingsProvider.Port);
             _tcpClient.Close();
         }
 

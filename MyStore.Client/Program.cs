@@ -8,6 +8,7 @@ namespace MyStore.Client
         private static readonly ILogger _logger = Configurator.Instance.GetLogger();
         static async Task Main()
         {
+            _logger.Info("MyStore Client is started");
             try
             {
                 using (IController controller = new Controller())

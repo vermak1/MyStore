@@ -17,7 +17,10 @@ namespace MyStore.Client
         public override void ChangeStateIfNeeded(UserCommand command, IResult result)
         {
             if (command.CommandType == EUserCommand.Login && result.Status == EResultStatus.Success)
+            {
                 _stateSwitcher.SwitchState<AuthorizedUser>();
+                _logger.Info("State was changed from '{0}' to '{1}'", nameof(UnauthorizedUser), nameof(AuthorizedUser));
+            }
         }
     }
 }

@@ -51,7 +51,10 @@ namespace MyStore.Client
                 return ResultFactory.UnknownCommand();
 
             if (!_currentState.IsCommandValidForState(command))
+            {
+                _logger.Info("Command [{0}] is not valid for current state [{1}]", command.CommandType, _currentState.GetType().Name);
                 return ResultFactory.InvalidForState();
+            }
 
             IResult result;
             switch (command)
@@ -68,6 +71,7 @@ namespace MyStore.Client
                 default:
                     return ResultFactory.InvalidForState();
             }
+            _logger.Info("Result of processing command [{0}] is [{1}], message [{2}]", command.CommandType, result.Status, result.Message);
             _currentState.ChangeStateIfNeeded(command, result);
             return result;
         }
