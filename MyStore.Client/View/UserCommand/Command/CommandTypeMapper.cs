@@ -17,8 +17,9 @@ namespace MyStore.Client
 
         public static EUserCommand GetCommandType(String input)
         {
-            if (dict.ContainsKey(input))
-                return dict[input];
+            String lower = input.ToLower();
+            if (dict.ContainsKey(lower))
+                return dict[lower];
 
             return EUserCommand.Unknown;
         }

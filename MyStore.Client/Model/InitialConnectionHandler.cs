@@ -17,32 +17,16 @@ namespace MyStore.Client
 
         public InitialConnectionHandler(IMessenger messenger)
         {
-            try
-            {
-                _logger = Configurator.Instance.GetLogger();
-                _messenger = messenger;
-                _commandProvider = new ServiceCommandBuilder();
-                _commandProcessor = new ServiceCommandProcessor();
-            }
-            catch(Exception ex)
-            {
-                _logger.Exception(ex, "Failed to initialize {0}", nameof(InitialConnectionHandler));
-                throw;
-            }
+            _logger = Configurator.Instance.GetLogger();
+            _messenger = messenger;
+            _commandProvider = new ServiceCommandBuilder();
+            _commandProcessor = new ServiceCommandProcessor();
         }
 
         public async Task TryConnectIfNeeded()
         {
-            try
-            {
-                if (await _messenger.ConnectToServerAsync())
-                    await CheckLibraryVersion();
-            }
-            catch(Exception ex)
-            {
-                _logger.Exception(ex, "Error within initial connect");
-                throw;
-            }
+            if (await _messenger.ConnectToServerAsync())
+                await CheckLibraryVersion();
         }
 
         private async Task CheckLibraryVersion()

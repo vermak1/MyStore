@@ -48,19 +48,11 @@ namespace MyStore.Client
         }
         public TcpClientMessenger(IRetryOptionsProvider retryOptions, ISocketSettingsProvider settings)
         {
-            try
-            {
-                _settingsProvider = settings;
-                _retryOptions = retryOptions;
-                _logger = Configurator.Instance.GetLogger();
-            }
-            catch (Exception ex)
-            {
-                _tcpClient?.Dispose();
-                _logger.Exception(ex, "Failed to initialize TcpClient messenger");
-                throw;
-            }
+            _settingsProvider = settings;
+            _retryOptions = retryOptions;
+            _logger = Configurator.Instance.GetLogger();
         }
+
         public void Dispose()
         {
             _tcpClient?.Dispose();
@@ -88,7 +80,7 @@ namespace MyStore.Client
                     Thread.Sleep(_retryOptions.RetryInterval);
                 }
             }
-            return true;
+            throw new Exception("Couldn't connect to server");
         }
 
         private Boolean TryCreateClient()
@@ -112,8 +104,20 @@ namespace MyStore.Client
 
         public async Task<string> SendAndReceiveMessageAsync(string message)
         {
-            await SendMessageInternalAsync(message);
-            return await ReceiveMessageInternalAsync();
+            for (int i = 0; i < _retryOptions.RetryCount; i++)
+            {
+                try
+                {
+                    await SendMessageInternalAsync(message);
+                    return await ReceiveMessageInternalAsync();
+                }
+                catch (Exception ex)
+                {
+                    _logger.Exception(ex, "Failed to send and receive message from server[{0}:{1}]. Retry {2} of {3}", _settingsProvider.IP, _settingsProvider.Port, i + 1, _retryOptions.RetryCount);
+                    Thread.Sleep(_retryOptions.RetryInterval);
+                }
+            }
+            throw new Exception("Failed to send and receive message from server");
         }
 
         private async Task SendMessageInternalAsync(String message)
