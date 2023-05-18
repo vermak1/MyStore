@@ -6,13 +6,10 @@ namespace MyStore.Client
 {
     internal class Controller : IController
     {
-        private readonly ILogger _logger;
-
         private readonly IServerInteractor _serverInteractor;
 
         public Controller()
         {
-            _logger = Configurator.Instance.GetLogger();
             _serverInteractor = new ServerInteractor();
         }
 
