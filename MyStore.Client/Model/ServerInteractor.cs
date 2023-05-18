@@ -40,10 +40,10 @@ namespace MyStore.Client
             _messenger?.Dispose();
         }
 
-        public async Task<ListCarsResponseInfo> GetListCars()
+        public async Task<ListCarsResponseInfo> GetListCars(UserListAllCarsCommand command)
         {
             await _initialConnectionHandler.TryConnectIfNeeded();
-            var request = _commandsConstructor.GetServerCommandForListAllCars();
+            var request = _commandsConstructor.GetServerCommandForListAllCars(command);
             var response = await _messenger.SendAndReceiveMessageAsync(request);
             return _responseConverter.ConvertStringToListCars(response);
         }

@@ -6,13 +6,16 @@ namespace MyStore.Client
     {
         public UnauthorizedUser(IUserStateSwitcher stateSwitcher) : base(stateSwitcher)
         {
+            _validCommands = new EUserCommand[]
+            {
+                EUserCommand.Exit,
+                EUserCommand.Login,
+                EUserCommand.CreateUser,
+            };
         }
 
-        protected override EUserCommand[] VALID_COMMANDS => new EUserCommand[] 
-        {
-            EUserCommand.Login,
-            EUserCommand.CreateUser
-        };
+        private readonly EUserCommand[] _validCommands;
+        public override EUserCommand[] VALID_COMMANDS => _validCommands;
 
         public override void ChangeStateIfNeeded(UserCommand command, IResult result)
         {

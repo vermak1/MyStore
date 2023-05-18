@@ -19,7 +19,7 @@ namespace MyStore.Server
             _serviceCommandProcessor = new ServiceCommandProcessor();
         }
 
-        public async Task<Boolean> Verify()
+        public async Task<Boolean> CheckVersion()
         {
             var request = await _messenger.ReceiveMessageAsync();
             Int32 serverVersion = LibraryInfo.Version;

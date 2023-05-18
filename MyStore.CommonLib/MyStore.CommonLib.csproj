@@ -51,13 +51,14 @@
     <Compile Include="Command\Service\LibVersionCommand.cs" />
     <Compile Include="Command\Service\ServiceCommandFactory.cs" />
     <Compile Include="Command\Service\ServiceCommandParser.cs" />
+    <Compile Include="Containers\ListCarCommand.cs" />
     <Compile Include="Containers\ListCarsResponseInfo.cs" />
     <Compile Include="Containers\ResponseInfo.cs" />
+    <Compile Include="Containers\UnknownCommandResponse.cs" />
     <Compile Include="Converting\ISerializer.cs" />
     <Compile Include="Converting\JsonSerializer.cs" />
     <Compile Include="Containers\CarInfo.cs" />
     <Compile Include="Command\CommandFactory.cs" />
-    <Compile Include="Containers\CustomerInfo.cs" />
     <Compile Include="Containers\CommandInfo.cs" />
     <Compile Include="Command\ECommandType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -33,9 +33,9 @@ namespace MyStore.Client
             _currentState = _allStates.FirstOrDefault(x => x is T);
         }
 
-        public List<String> GetAvailableCommands()
+        public EUserCommand[] GetAvailableCommands()
         {
-            return _currentState.GetAvailableCommands();
+            return _currentState.VALID_COMMANDS;
         }
 
         public async Task<IResult> ProcessCommand(UserCommand command)

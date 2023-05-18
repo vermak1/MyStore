@@ -9,6 +9,7 @@ namespace MyStore.Server
     internal interface IDbAccessor
     {
         Task<DataSet> RunStoredProcedureReadAsync(String spName, IEnumerable<SqlParameter> parameters);
+        Task<DataSet> RunStoredProcedureReadAsync(String spName, SqlParameter parameter);
         Task<DataSet> RunStoredProcedureReadAsync(String spName);
         Task<Int32> RunStoredProcedureWriteAsync(String procedureName, IEnumerable<SqlParameter> spParams);
     }

@@ -66,7 +66,10 @@
     <Compile Include="Model\Connection\IMessenger.cs" />
     <Compile Include="Model\Connection\IRetryOptionsProvider.cs" />
     <Compile Include="Model\Connection\RetryOptionsHardcodeProvider.cs" />
+    <Compile Include="View\UserCommand\Command\CommandsDescriptor.cs" />
     <Compile Include="View\UserCommand\Command\CommandTypeMapper.cs" />
+    <Compile Include="View\UserCommand\Command\EListCarsSubType.cs" />
+    <Compile Include="View\UserCommand\Command\ListCarsCommandBuilder.cs" />
     <Compile Include="View\UserCommand\Command\UserCommandFactory.cs" />
     <Compile Include="View\UserCommand\Command\EUserCommand.cs" />
     <Compile Include="View\UserCommand\Command\UserExitCommand.cs" />

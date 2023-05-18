@@ -5,13 +5,15 @@ namespace MyStore.Server
 {
     internal class MainProcessor
     {
+        private readonly IClientAwaiter _clientAwaiter;
+        public MainProcessor()
+        {
+            _clientAwaiter = ClientAwaiterFactory.GetClientAwaiter();
+        }
         public void StartServer()
         {
             try
             {
-                ConnectionProvider connectionProvider = new ConnectionProvider();
-                IClientAwaiter clientAwaiter = connectionProvider.GetClientAwaiter();
-                    
                 using (AutoResetEvent wh = new AutoResetEvent(false))
                 {
                     ThreadPool.GetAvailableThreads(out Int32 availableThreads, out Int32 availableIOThreads);
@@ -19,7 +21,7 @@ namespace MyStore.Server
                     {
                         ThreadPool.QueueUserWorkItem(async (o) =>
                         {
-                            await clientAwaiter.WaitingAndProcessClientAsync(wh);
+                            await _clientAwaiter.WaitingAndProcessClientAsync(wh);
                         });
                         wh.WaitOne();
                         ThreadPool.GetAvailableThreads(out availableThreads, out availableIOThreads);

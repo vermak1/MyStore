@@ -11,9 +11,21 @@ namespace MyStore.Client
             _factory = new CommandFactory();
         }
 
-        public String GetServerCommandForListAllCars()
+        public String GetServerCommandForListAllCars(UserListAllCarsCommand command)
         {
-            return _factory.ListAllCarsCommand();
+            switch (command.SubType)
+            {
+                case EListCarsSubType.SelectAll:
+                    return _factory.ListAllCarsCommand();
+                case EListCarsSubType.SelectByYear:
+                    return _factory.ListCarsByYear(command.Year);
+                case EListCarsSubType.SelectByName:
+                    return _factory.ListCarsByName(command.Model);
+                case EListCarsSubType.SelectByNameAndYear:
+                    return _factory.ListCarsByNameAndYear(command.Model, command.Year);
+                default:
+                    throw new ArgumentException("Non-existent subtype of ListCarsCommand");
+            }
         }
     }
 }

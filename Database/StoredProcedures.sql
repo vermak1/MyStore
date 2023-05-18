@@ -14,6 +14,61 @@ SELECT *
 GO
 
 
+--ListCarsByName
+PRINT N'Creating [dbo].[ListCarsByName]';
+IF EXISTS (SELECT  *
+           FROM sys.objects
+           WHERE object_id = OBJECT_ID(N'[dbo].[ListCarsByName]')
+           AND type IN ( N'P', N'PC' ))
+    DROP PROCEDURE [dbo].[ListCarsByName];
+GO
+
+CREATE PROCEDURE [dbo].[ListCarsByName]
+    @name nvarchar(30)
+AS
+SELECT *
+    FROM [dbo].[Cars]
+    WHERE brand = @name
+GO
+
+
+--ListCarsByYear
+PRINT N'Creating [dbo].[ListCarsByYear]';
+IF EXISTS (SELECT  *
+           FROM sys.objects
+           WHERE object_id = OBJECT_ID(N'[dbo].[ListCarsByYear]')
+           AND type IN ( N'P', N'PC' ))
+    DROP PROCEDURE [dbo].[ListCarsByYear];
+GO
+
+CREATE PROCEDURE [dbo].[ListCarsByYear] 
+    @year int
+AS
+SELECT *
+    FROM [dbo].[Cars]
+    WHERE year = @year
+GO
+
+
+--ListCarsByNameAndYear
+PRINT N'Creating [dbo].[ListCarsByNameAndYear]';
+IF EXISTS (SELECT  *
+           FROM sys.objects
+           WHERE object_id = OBJECT_ID(N'[dbo].[ListCarsByNameAndYear]')
+           AND type IN ( N'P', N'PC' ))
+    DROP PROCEDURE [dbo].[ListCarsByNameAndYear];
+GO
+
+CREATE PROCEDURE [dbo].[ListCarsByNameAndYear] 
+    @year int,
+    @name nvarchar(30)
+AS
+SELECT *
+    FROM [dbo].[Cars]
+    WHERE brand = @name AND year = @year
+GO
+
+
 --FindCustomerById
 PRINT N'Creating [dbo].[FindCustomerById]';
 IF EXISTS (SELECT  *

@@ -11,7 +11,7 @@ namespace MyStore.Server
     {
         private static IDbAccessor _instance;
 
-        private static Object sync = new Object();
+        private static readonly Object sync = new Object();
         private SQLDbAccessor() { }
         public static IDbAccessor Instance
         {
@@ -33,6 +33,11 @@ namespace MyStore.Server
         }
         private async Task<DataSet> ExecuteStoredProcedureReadAsyncInternal(string spName, IEnumerable<SqlParameter> spParams)
         {
+            if (spParams == null)
+                throw new ArgumentNullException(nameof(spParams));
+            if (String.IsNullOrEmpty(spName))
+                throw new ArgumentException(nameof(spName));
+
             DataSet ds = new DataSet();
             using (var connection = await SQLConnectionsFactory.GetConnectionAsync())
             {
@@ -61,6 +66,9 @@ namespace MyStore.Server
 
         private async Task<DataSet> ExecuteStoredProcedureReadAsyncInternal(string spName)
         {
+            if (String.IsNullOrEmpty(spName))
+                throw new ArgumentException(nameof(spName));
+
             DataSet ds = new DataSet();
             using (var connection = await SQLConnectionsFactory.GetConnectionAsync())
             {
@@ -87,6 +95,11 @@ namespace MyStore.Server
 
         private async Task<Int32> ExecuteStoredProcedureWriteAsyncInternal(string spName, IEnumerable<SqlParameter> spParams)
         {
+            if (spParams == null)
+                throw new ArgumentNullException(nameof(spParams));
+            if (String.IsNullOrEmpty(spName))
+                throw new ArgumentException(nameof(spName));
+
             Int32 rowsAffected = 0;
             using (var connection = await SQLConnectionsFactory.GetConnectionAsync())
             {
@@ -112,31 +125,24 @@ namespace MyStore.Server
         }
 
         public async Task<DataSet> RunStoredProcedureReadAsync(String procedureName, IEnumerable<SqlParameter> spParams)
-        {
-            if (spParams == null)
-                throw new ArgumentNullException(nameof(spParams));
-            if (String.IsNullOrEmpty(procedureName))
-                throw new ArgumentException(nameof(procedureName));
-            
+        {           
             return await ExecuteStoredProcedureReadAsyncInternal(procedureName, spParams);
         }
 
         public async Task<Int32> RunStoredProcedureWriteAsync(String procedureName, IEnumerable<SqlParameter> spParams)
         {
-            if (spParams == null)
-                throw new ArgumentNullException(nameof(spParams));
-            if (String.IsNullOrEmpty(procedureName))
-                throw new ArgumentException(nameof(procedureName));
-
             return await ExecuteStoredProcedureWriteAsyncInternal(procedureName, spParams);
         }
 
         public async Task<DataSet> RunStoredProcedureReadAsync(string spName)
         {
-            if (String.IsNullOrEmpty(spName))
-                throw new ArgumentException(nameof(spName));
-            
             return await ExecuteStoredProcedureReadAsyncInternal(spName);
+        }
+
+        public async Task<DataSet> RunStoredProcedureReadAsync(string spName, SqlParameter parameter)
+        {
+            IEnumerable<SqlParameter> parameters = new SqlParameter[] { parameter };
+            return await ExecuteStoredProcedureReadAsyncInternal(spName, parameters);
         }
     }
 }

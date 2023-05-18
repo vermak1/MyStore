@@ -27,7 +27,8 @@ namespace MyStore.Client
             if(message == null)
                 throw new ArgumentNullException(nameof(message));
 
-            Console.WriteLine("[{0}]\t{1}", DateTime.Now, message);
+            foreach (var line in message.Split('\n'))
+                Console.WriteLine("[{0}]\t{1}", DateTime.Now, line);
         }
 
         public void ShowMessage(IEnumerable<String> message)
@@ -73,9 +74,10 @@ namespace MyStore.Client
 
         public void ShowAvailableCommands()
         {
-            var commands = _userContext.GetAvailableCommands();
+            EUserCommand[] commands = _userContext.GetAvailableCommands();
+            String[] descrs = CommandsDescriptor.GetDescriptions(commands);
             ShowMessage("Enter one of available commands:");
-            ShowMessage(commands);
+            ShowMessage(descrs);
         }
 
         private UserCommand GetCommandFromInput()

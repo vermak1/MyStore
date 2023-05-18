@@ -1,28 +1,31 @@
-﻿using System;
+﻿using MyStore.CommonLib;
+using System;
 using System.Threading.Tasks;
 
 namespace MyStore.Server
 {
     internal class CommandProcessor
     {
-        private readonly ClientCommandHandler _handler;
+        private readonly ResponseGenerator _responseGenerator;
 
         private readonly IMessenger _messenger;
+
+        private readonly CommandParser _parser;
         public CommandProcessor(IMessenger messenger)
         {
-            _handler = new ClientCommandHandler();
+            _responseGenerator = new ResponseGenerator();
             _messenger = messenger;
+            _parser = new CommandParser();
         }
 
         public async Task<Boolean> WaitRequestAndResponse()
         {
             try
             {
-                var command = await _messenger.ReceiveMessageAsync();
-                var t = _handler.ParseCommandAndGenerateResponse(command);
-                Log.Info("Command [{0}] was requested", command);
-
-                String response = await t;
+                String command = await _messenger.ReceiveMessageAsync();
+                Log.Info("Command [{0}] received", command);
+                CommandInfo info = _parser.GetCommandInfo(command);
+                var response = await _responseGenerator.GenerateResponse(info);
                 await _messenger.SendMessageAsync(response);
                 return true;
             }

@@ -21,11 +21,11 @@ namespace MyStore.Client
             _serverInteractor?.Dispose();
         }
 
-        public async Task<IResult> GetAllCarsCommand(UserListAllCarsCommand c)
+        public async Task<IResult> GetAllCarsCommand(UserListAllCarsCommand command)
         {
             try
             {
-                ListCarsResponseInfo response = await _serverInteractor.GetListCars();
+                ListCarsResponseInfo response = await _serverInteractor.GetListCars(command);
                 return ResultFactory.CarListResult(EResultStatus.Success, response);
             }
             catch(Exception ex)

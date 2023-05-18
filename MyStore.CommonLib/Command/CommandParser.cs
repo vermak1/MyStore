@@ -9,7 +9,21 @@ namespace MyStore.CommonLib
             if (String.IsNullOrEmpty(command))
                 throw new ArgumentException(nameof(command));
 
-            return _serializer.DeserializeObject<CommandInfo>(command);
+            
+            var serialized = _serializer.DeserializeObject<CommandInfo>(command);
+            switch(serialized.CommandType) 
+            {
+                case ECommandType.ListAllCars:
+                    return _serializer.DeserializeObject<ListCarCommand>(command);
+                case ECommandType.ListAllCarsByName:
+                    return _serializer.DeserializeObject<ListCarCommand>(command);
+                case ECommandType.ListAllCarsByYear:
+                    return _serializer.DeserializeObject<ListCarCommand>(command);
+                case ECommandType.ListAllCarsByNameAndYear:
+                    return _serializer.DeserializeObject<ListCarCommand>(command);
+                default:
+                    return _serializer.DeserializeObject<CommandInfo>(command);
+            }
         }
     }
 }

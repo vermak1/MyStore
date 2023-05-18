@@ -21,7 +21,7 @@ namespace MyStore.Server
         {
             try
             {
-                if (!await _versionChecker.Verify())
+                if (!await _versionChecker.CheckVersion())
                     return;
 
                 Boolean commandProcessed = await _commandProcessor.WaitRequestAndResponse();

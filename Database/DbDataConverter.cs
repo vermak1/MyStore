@@ -1,18 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using MyStore.CommonLib;
 
 namespace MyStore.Server
 {
     internal class DbDataConverter
     {
-        public static List<CarInfo> ConvertToCarInfo(DataSet data)
+        public static List<CarContainer> ConvertToListCarContainer(DataSet data)
         {
             if (data == null)
                 throw new ArgumentNullException(nameof(data));
 
-            List<CarInfo> list = new List<CarInfo>();
+            List<CarContainer> list = new List<CarContainer>();
             if (data.Tables[0].Rows.Count == 0)
             {
                 Log.Error("There is not result parsed from DataSet");
@@ -21,7 +20,7 @@ namespace MyStore.Server
 
             for (int i = 0; i < data.Tables[0].Rows.Count; i++)
             {
-                list.Add(new CarInfo()
+                list.Add(new CarContainer()
                 {
                     Id = Guid.Parse(data.Tables[0].Rows[i]["id"].ToString()),
                     Brand = data.Tables[0].Rows[i]["brand"].ToString(),

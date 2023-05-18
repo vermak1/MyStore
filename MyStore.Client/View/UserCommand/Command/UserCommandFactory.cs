@@ -29,10 +29,36 @@ namespace MyStore.Client
 
         private static UserListAllCarsCommand ListCarsCommand(String[] args)
         {
-            if (args.Length == 0) 
-                return new UserListAllCarsCommand();
+            if (args.Length > 2)
+                throw new ArgumentException("Too many parameters provided for the command");
 
-            throw new NotImplementedException();
+            ListCarsCommandBuilder builder = new ListCarsCommandBuilder();
+            if (args.Length == 1)
+            {
+                if (Int32.TryParse(args[0], out Int32 year))
+                {
+                    return builder.Year(year)
+                        .SubType(EListCarsSubType.SelectByYear)
+                        .Build();
+                }
+
+                return builder.Name(args[0])
+                        .SubType(EListCarsSubType.SelectByName)
+                        .Build();
+            }
+
+            if (args.Length == 2)
+            {
+                if (!Int32.TryParse(args[1], out Int32 year))
+                    throw new ArgumentException(String.Format("Failed to convert '{0}' to integer", args[1]));
+
+                return builder.Name(args[0])
+                    .Year(year)
+                    .SubType(EListCarsSubType.SelectByNameAndYear)
+                    .Build();
+            }
+            return builder.SubType(EListCarsSubType.SelectAll)
+                .Build();
         }
 
         private static UserUnknownCommand UnknownCommand()

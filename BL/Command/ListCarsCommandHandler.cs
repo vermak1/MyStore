@@ -1,6 +1,7 @@
 ﻿using System;
 using MyStore.CommonLib;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace MyStore.Server
 {
@@ -15,16 +16,33 @@ namespace MyStore.Server
             _factory = new ResponseFactory();
             _carRepository = new CarRepository();
         }
-        public async Task<String> GenerateResponse()
+        public async Task<String> GetCars(ListCarCommand command)
         {
-            var t = _carRepository.ListCarsAsync();
-            ListCarsResponseInfo info = new ListCarsResponseInfo()
+            List<CarContainer> result;
+            switch (command.CommandType)
             {
-                CarInfos = await t,
-                Type = ECommandType.ListAllCars
-            };
-            
-            return _factory.ResponseListAllCars(info);
+                case ECommandType.ListAllCars:
+                    result = await _carRepository.ListAllCarsAsync();
+                    break;
+                case ECommandType.ListAllCarsByName:
+                    result = await _carRepository.ListCarsByNameAsync(command.Model);
+                    break;
+                case ECommandType.ListAllCarsByYear:
+                    result = await _carRepository.ListCarsByYearAsync(command.Year);
+                    break;
+                case ECommandType.ListAllCarsByNameAndYear:
+                    result = await _carRepository.ListCarsByNameAndYearAsync(command.Model, command.Year);
+                    break;
+                default:
+                    throw new Exception("There is not such command type for retrieving cars");
+            }
+            return GetStringFromResult(result);
+        }
+
+        private String GetStringFromResult(List<CarContainer> cars)
+        {
+            var commonLibInfo = ContainerConverter.ConvertFromServerListToCommonLib(cars);
+            return _factory.ResponseListAllCars(commonLibInfo);
         }
     }
 }

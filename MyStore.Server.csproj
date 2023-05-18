@@ -44,11 +44,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BL\Command\ClientCommandHandler.cs" />
+    <Compile Include="BL\Command\ResponseGenerator.cs" />
     <Compile Include="BL\Command\CommandProcessor.cs" />
     <Compile Include="BL\CommonLibVersionChecker.cs" />
     <Compile Include="BL\Command\ListCarsCommandHandler.cs" />
     <Compile Include="BL\Command\Service\ServiceCommandBuilder.cs" />
+    <Compile Include="BL\Container\CarContainer.cs" />
+    <Compile Include="BL\Container\ContainerConverter.cs" />
     <Compile Include="BL\MainProcessor.cs" />
     <Compile Include="Car\CarRepository.cs" />
     <Compile Include="Car\ICarRepository.cs" />
@@ -57,13 +59,11 @@
     <Compile Include="ClientsInteraction\Socket\IServerSocketSettingsProvider.cs" />
     <Compile Include="ClientsInteraction\Socket\SocketSettingsHardcodeProvider.cs" />
     <Compile Include="BL\Command\Service\ServiceCommandProcessor.cs" />
-    <Compile Include="ClientsInteraction\Config\ConnectionProvider.cs" />
-    <Compile Include="ClientsInteraction\Config\IConnectionConfigurator.cs" />
+    <Compile Include="ClientsInteraction\Config\ClientAwaiterFactory.cs" />
     <Compile Include="ClientsInteraction\TcpListener\IMessenger.cs" />
     <Compile Include="ClientsInteraction\TcpListener\TcpClientProcessor.cs" />
     <Compile Include="ClientsInteraction\TcpListener\TcpListenerClientAwaiter.cs" />
     <Compile Include="ClientsInteraction\TcpListener\TcpMessenger.cs" />
-    <Compile Include="Customer\ICustomerRepository.cs" />
     <Compile Include="Database\DbAccessorFactory.cs" />
     <Compile Include="Database\DbDataConverter.cs" />
     <Compile Include="Database\IDbAccessor.cs" />
