@@ -38,12 +38,12 @@ namespace MyStore.Client
                 if (Int32.TryParse(args[0], out Int32 year))
                 {
                     return builder.Year(year)
-                        .SubType(EListCarsSubType.SelectByYear)
+                        .SubType(EListCarsFilter.SelectByYear)
                         .Build();
                 }
 
-                return builder.Name(args[0])
-                        .SubType(EListCarsSubType.SelectByName)
+                return builder.Model(args[0])
+                        .SubType(EListCarsFilter.SelectByName)
                         .Build();
             }
 
@@ -52,12 +52,12 @@ namespace MyStore.Client
                 if (!Int32.TryParse(args[1], out Int32 year))
                     throw new ArgumentException(String.Format("Failed to convert '{0}' to integer", args[1]));
 
-                return builder.Name(args[0])
+                return builder.Model(args[0])
                     .Year(year)
-                    .SubType(EListCarsSubType.SelectByNameAndYear)
+                    .SubType(EListCarsFilter.SelectByNameAndYear)
                     .Build();
             }
-            return builder.SubType(EListCarsSubType.SelectAll)
+            return builder.SubType(EListCarsFilter.SelectAll)
                 .Build();
         }
 

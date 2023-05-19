@@ -10,10 +10,12 @@ namespace MyStore.Client
 
         private readonly UserContext _userContext;
 
+        private readonly ILogger _logger;
         public ConsoleUserInterface(UserContext context)
         {
             _userContext = context;
             _commandGenerator = new UserCommandGenerator();
+            _logger = Configurator.Instance.GetLogger();
         }
 
         public String GetMessageFromUser()
@@ -66,6 +68,7 @@ namespace MyStore.Client
                 }
                 catch (Exception ex)
                 {
+                    _logger.Exception(ex, "Processing failed within {0} method", nameof(Run));
                     ShowMessage(ex.Message);
                 }
             }

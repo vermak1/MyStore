@@ -6,6 +6,6 @@ namespace MyStore.Client
 {
     internal interface IServerInteractor : IDisposable
     {
-        Task<ListCarsResponseInfo> GetListCars(UserListAllCarsCommand command);
+        Task<String> SendCommandAndReceiveResponse(String command);
     }
 }

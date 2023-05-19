@@ -13,15 +13,15 @@ namespace MyStore.Client
 
         public String GetServerCommandForListAllCars(UserListAllCarsCommand command)
         {
-            switch (command.SubType)
+            switch (command.Filter)
             {
-                case EListCarsSubType.SelectAll:
+                case EListCarsFilter.SelectAll:
                     return _factory.ListAllCarsCommand();
-                case EListCarsSubType.SelectByYear:
+                case EListCarsFilter.SelectByYear:
                     return _factory.ListCarsByYear(command.Year);
-                case EListCarsSubType.SelectByName:
+                case EListCarsFilter.SelectByName:
                     return _factory.ListCarsByName(command.Model);
-                case EListCarsSubType.SelectByNameAndYear:
+                case EListCarsFilter.SelectByNameAndYear:
                     return _factory.ListCarsByNameAndYear(command.Model, command.Year);
                 default:
                     throw new ArgumentException("Non-existent subtype of ListCarsCommand");

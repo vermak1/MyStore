@@ -8,9 +8,15 @@ namespace MyStore.Client
     {
         private readonly IServerInteractor _serverInteractor;
 
+        private readonly ServerCommandsConstructor _commandsConstructor;
+
+        private readonly ResponseConverter _responseConverter;
+
         public Controller()
         {
             _serverInteractor = new ServerInteractor();
+            _commandsConstructor = new ServerCommandsConstructor();
+            _responseConverter = new ResponseConverter();
         }
 
         public void Dispose() 
@@ -22,8 +28,10 @@ namespace MyStore.Client
         {
             try
             {
-                ListCarsResponseInfo response = await _serverInteractor.GetListCars(command);
-                return ResultFactory.CarListResult(EResultStatus.Success, response);
+                String serialized = _commandsConstructor.GetServerCommandForListAllCars(command);
+                String response = await _serverInteractor.SendCommandAndReceiveResponse(serialized);
+                ListCarsResponseInfo responseInfo = _responseConverter.ConvertStringToListCars(response);
+                return ResultFactory.CarListResult(EResultStatus.Success, responseInfo);
             }
             catch(Exception ex)
             {

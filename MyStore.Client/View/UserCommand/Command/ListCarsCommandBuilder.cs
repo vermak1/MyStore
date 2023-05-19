@@ -11,12 +11,12 @@ namespace MyStore.Client
             _userCommand = new UserListAllCarsCommand();
         }
 
-        public ListCarsCommandBuilder Name(String name)
+        public ListCarsCommandBuilder Model(String model)
         {
-            if (String.IsNullOrEmpty(name))
-                throw new ArgumentException(nameof(name));
+            if (String.IsNullOrEmpty(model))
+                throw new ArgumentException();
 
-            _userCommand.Model = name;
+            _userCommand.Model = model;
             return this;
         }
 
@@ -29,9 +29,9 @@ namespace MyStore.Client
             return this;
         }
 
-        public ListCarsCommandBuilder SubType(EListCarsSubType subType)
+        public ListCarsCommandBuilder SubType(EListCarsFilter filter)
         {
-            _userCommand.SubType = subType;
+            _userCommand.Filter = filter;
             return this;
         }
 

@@ -1,6 +1,6 @@
 ﻿namespace MyStore.Client
 {
-    internal enum EListCarsSubType
+    internal enum EListCarsFilter
     {
         SelectAll = 0,
         SelectByName = 1,
