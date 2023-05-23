@@ -22,13 +22,18 @@ namespace MyStore.Server
         public static void Exception(Exception ex, string message)
         {
             LogInternal(message, ELogSeverity.Error);
-            LogInternal(ex.StackTrace, ELogSeverity.Error);
+            ExceptionInternal(ex);
+        }
+
+        public static void Exception(Exception ex)
+        {
+            ExceptionInternal(ex);
         }
 
         public static void Exception(Exception ex, string message, params object[] args)
         {
             LogInternalWithArgs(message, ELogSeverity.Error, args);
-            LogInternal(ex.StackTrace, ELogSeverity.Error);
+            ExceptionInternal(ex);
         }
 
         public static void Info(string message)
@@ -51,6 +56,12 @@ namespace MyStore.Server
             LogInternalWithArgs(message, ELogSeverity.Warning, args);
         }
 
+        private static void ExceptionInternal(Exception ex)
+        {
+            LogInternal(ex.Message, ELogSeverity.Error);
+            LogInternal(ex.StackTrace, ELogSeverity.Error);
+        }
+
         private static void LogInternalWithArgs(String message, ELogSeverity severity, params object[] args)
         {
             if (args == null)
@@ -67,10 +78,12 @@ namespace MyStore.Server
         {
             if (String.IsNullOrEmpty(message))
                 throw new ArgumentException(message, nameof(message));
-
-            String formatted = String.Format("[{0}] <{1}>\t[{2}]\t{3}\n", DateTime.Now, Thread.CurrentThread.ManagedThreadId, severity, message);
-            lock (s_sync)
-                File.AppendAllText(s_path, formatted);
+            foreach(var line in message.Split('\n')) 
+            {
+                String formatted = String.Format("[{0}] <{1}>\t[{2}]\t{3}\n", DateTime.Now, Thread.CurrentThread.ManagedThreadId, severity, line);
+                lock (s_sync)
+                    File.AppendAllText(s_path, formatted);
+            }
         }
     }
 }
