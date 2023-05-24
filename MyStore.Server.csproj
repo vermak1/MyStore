@@ -44,6 +44,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BL\CancelOperationHelper.cs" />
+    <Compile Include="BL\ICancelOperationHelper.cs" />
     <Compile Include="BL\Command\ResponseGenerator.cs" />
     <Compile Include="BL\Command\CommandProcessor.cs" />
     <Compile Include="BL\CommonLibVersionChecker.cs" />

@@ -34,10 +34,10 @@ namespace MyStore.Server
             await _messenger.SendMessageAsync(responseWithVersion);
             if (serverVersion != clientVersion)
             {
-                Log.Error("Common dll version mismatch: server version: {0}, client version: {1}", serverVersion, clientVersion);
+                Log.Error("Common dll version mismatch: server version: {0}, client '{1}' version: {2}", serverVersion, _messenger, clientVersion);
                 return false;
             }
-            Log.Info("Common dll versions of server and client are matched, version '{0}'", serverVersion);
+            Log.Info("Common dll versions of server and client '{0}' are matched, version '{1}'", _messenger, serverVersion);
             return true;
         }
     }

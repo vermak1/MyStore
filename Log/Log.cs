@@ -60,6 +60,8 @@ namespace MyStore.Server
         {
             LogInternal(ex.Message, ELogSeverity.Error);
             LogInternal(ex.StackTrace, ELogSeverity.Error);
+            if (ex.InnerException != null)
+                ExceptionInternal(ex.InnerException);
         }
 
         private static void LogInternalWithArgs(String message, ELogSeverity severity, params object[] args)

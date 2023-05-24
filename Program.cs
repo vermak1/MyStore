@@ -8,14 +8,22 @@ namespace MyStore.Server
         {
             try
             {
-                MainProcessor main = new MainProcessor();
-                main.StartServer();
+                using (MainProcessor main = new MainProcessor())
+                {
+                    main.StartServer();
+                }
             }
             catch(Exception ex)
             {
-                Log.Exception(ex, "Application is closed with code 1");
-                Environment.Exit(1);
+                Log.Exception(ex);
+                Exit(1);
             }
+            Exit(0);
+        }
+        private static void Exit(int code)
+        {
+            Log.Info($"Application is closed with code {code}");
+            Environment.Exit(code);
         }
     }
 }
