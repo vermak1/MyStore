@@ -1,25 +1,39 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace MyStore.Client
 {
     internal class ConsoleUserInterface : IUserInterface
     {
+        private readonly IUserCommandGenerator _commandGenerator;
+
+        private readonly UserContext _userContext;
+
+        private readonly ILogger _logger;
+        public ConsoleUserInterface(UserContext context)
+        {
+            _userContext = context;
+            _commandGenerator = new UserCommandGenerator();
+            _logger = Configurator.Instance.GetLogger();
+        }
+
         public String GetMessageFromUser()
         {
             Console.WriteLine(">");
             return Console.ReadLine();
         }
 
-        public void ShowMessage(string message)
+        public void ShowMessage(String message)
         {
             if(message == null)
                 throw new ArgumentNullException(nameof(message));
 
-            Console.WriteLine("[{0}]\t{1}", DateTime.Now, message);
+            foreach (var line in message.Split('\n'))
+                Console.WriteLine("[{0}]\t{1}", DateTime.Now, line);
         }
 
-        public void ShowMessage(IEnumerable<string> message)
+        public void ShowMessage(IEnumerable<String> message)
         {
             if (message == null)
                 throw new ArgumentNullException(nameof(message));
@@ -28,7 +42,7 @@ namespace MyStore.Client
                 ShowMessage(line);
         }
 
-        public void ShowMessage(string message, params object[] args)
+        public void ShowMessage(String message, params object[] args)
         {
             if (args == null)
             {
@@ -40,28 +54,39 @@ namespace MyStore.Client
             ShowMessage(formatted);
         }
 
-        public void OnCommandHandled(object sender, UserCommandHandledArgs args)
+        public async Task Run()
         {
-            if (args == null)
-                throw new ArgumentNullException(nameof(args));
-
-            ShowMessage(args.Message);
+            ShowMessage("Welcome to Store");
+            while (!_userContext.IsExitRequested)
+            {
+                try
+                {
+                    ShowAvailableCommands();
+                    UserCommand command = GetCommandFromInput();
+                    var t = await _userContext.ProcessCommand(command);
+                    ShowMessage($"{t.Message}\n{t.Content}");
+                }
+                catch (Exception ex)
+                {
+                    _logger.Exception(ex, "Processing failed within {0} method", nameof(Run));
+                    ShowMessage(ex.Message);
+                }
+            }
+            
         }
 
-        public void OnErrorOccured(object sender, ErrorEventArgs args)
+        public void ShowAvailableCommands()
         {
-            if (args == null)
-                throw new ArgumentNullException(nameof(args));
-
-            ShowMessage(args.Message);
-            if (args.Exception == null)
-                return;
-            ShowMessage(args.Exception.Message);
+            EUserCommand[] commands = _userContext.GetAvailableCommands();
+            String[] descrs = CommandsDescriptor.GetDescriptions(commands);
+            ShowMessage("Enter one of available commands:");
+            ShowMessage(descrs);
         }
 
-        public void OnConnectedToServer(object sender, EventArgs args)
+        private UserCommand GetCommandFromInput()
         {
-            ShowMessage("Successfully connected to server");
+            String message = GetMessageFromUser();
+            return _commandGenerator.GetUserCommandFromInput(message);
         }
     }
 }

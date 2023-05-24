@@ -4,47 +4,48 @@ namespace MyStore.Client
 {
     internal class Configurator
     {
+        private static object syncRoot = new Object();
+
+        private static Configurator _instance;
+
+        public static Configurator Instance
+        { get
+            {
+                if (_instance != null)
+                    return _instance;
+                lock (syncRoot) 
+                {
+                    if (_instance == null)
+                        _instance = new Configurator();
+                    return _instance;
+                }
+            }
+        }
         private readonly ConfigurationStringProvider _provider;
-
-        private readonly LoggerConfigurator _loggerConfig;
-
-        private readonly MessengerConfiguration _messengerConfig;
-
-        private readonly UserInterfaceConfiguration _userInterfaceConfig;
 
         private readonly ILogger _logger;
 
-        public Configurator()
+        private Configurator()
         {
-            _loggerConfig = new LoggerConfigurator();
             _provider = new ConfigurationStringProvider();
             if (!_provider.ConfigExist)
-                _logger = _loggerConfig.GetDefaultLogger();
-
-            _messengerConfig = new MessengerConfiguration();
-            _userInterfaceConfig = new UserInterfaceConfiguration();
+                _logger = LoggerFactory.GetDefaultLogger();
         }
 
         public IMessenger GetMessenger()
         {
             if (!_provider.ConfigExist)
-                return _messengerConfig.GetDefaultMessenger(_logger);
+                return MessengerFactory.GetTcpClientMessenger();
 
             throw new NotImplementedException();
         }
 
         public ILogger GetLogger()
         {
+            if (_logger != null)
+                return _logger;
             if (!_provider.ConfigExist)
-                return _loggerConfig.GetDefaultLogger();
-
-            throw new NotImplementedException();
-        }
-
-        public IUserInterface GetUserInterface()
-        {
-            if (!_provider.ConfigExist)
-                return _userInterfaceConfig.GetDefaultUserInterface();
+                return LoggerFactory.GetDefaultLogger();
 
             throw new NotImplementedException();
         }

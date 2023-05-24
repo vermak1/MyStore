@@ -1,75 +1,42 @@
 ﻿using System;
 using System.Threading.Tasks;
+using MyStore.CommonLib;
 
 namespace MyStore.Client
 {
-    internal class Controller
+    internal class Controller : IController
     {
-        public event EventHandler<UserCommandHandledArgs> UserCommandHandled;
+        private readonly IServerInteractor _serverInteractor;
 
-        private readonly IUserInterface _userInterface;
+        private readonly ServerCommandsConstructor _commandsConstructor;
 
-        private readonly ILogger _logger;
+        private readonly ResponseConverter _responseConverter;
 
-        private readonly UserCommandHandler _userCommandHandler;
-        public Controller(ILogger logger, IUserInterface userInterface, IMessenger messenger)
+        public Controller()
         {
-            _logger = logger;
-            _userInterface = userInterface;
-            _userCommandHandler = new UserCommandHandler(messenger);
+            _serverInteractor = new ServerInteractor();
+            _commandsConstructor = new ServerCommandsConstructor();
+            _responseConverter = new ResponseConverter();
         }
 
-        public async Task Run()
+        public void Dispose() 
+        {
+            _serverInteractor?.Dispose();
+        }
+
+        public async Task<IResult> GetAllCarsCommand(UserListAllCarsCommand command)
         {
             try
             {
-                UserCommand command;
-                do
-                {
-                    String output = String.Empty;
-                    ShowAvailableCommands();
-                    command = GetCommandFromInput();
-                    switch (command.CommandType)
-                    {
-                        case EUserCommand.ListAllCars:
-                            if (command is UserListAllCarsCommand)
-                                 output = await _userCommandHandler.HandleListAllCarsCommand();
-                            break;
-
-                        case EUserCommand.Exit:
-                            output = "ciao";
-                            break;
-
-                        case EUserCommand.Unknown:
-                            output = "Unknown command";
-                            break;
-                    }
-                    OnCommandHandled(output, command.CommandType);
-                } while (command.CommandType != EUserCommand.Exit);
+                String serialized = _commandsConstructor.GetServerCommandForListAllCars(command);
+                String response = await _serverInteractor.SendCommandAndReceiveResponse(serialized);
+                ListCarsResponseInfo responseInfo = _responseConverter.ConvertStringToListCars(response);
+                return ResultFactory.CarListResult(EResultStatus.Success, responseInfo);
             }
-            catch (Exception ex) 
+            catch(Exception ex)
             {
-                _logger.Exception(ex, "Error within {0} cycle occured", nameof(Run));
-                throw;
+                return ResultFactory.Error(String.Format("Couldn't get result\nError: {0}", ex.Message));
             }
-        }
-
-        protected virtual void OnCommandHandled(String message, EUserCommand command)
-        {
-            UserCommandHandled?.Invoke(this, new UserCommandHandledArgs(message, command));
-        }
-
-        private UserCommand GetCommandFromInput()
-        {
-            String message = _userInterface.GetMessageFromUser();
-            return UserMessageParser.GetUserCommandFromInput(message);
-        }
-
-        private void ShowAvailableCommands()
-        {
-            var commands = UserCommandsProvider.GetAvailableCommands();
-            _userInterface.ShowMessage("Enter one of available commands:");
-            _userInterface.ShowMessage(commands);
         }
     }
 }

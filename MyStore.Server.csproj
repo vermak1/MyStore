@@ -44,37 +44,37 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BL\CancelOperationHelper.cs" />
+    <Compile Include="BL\ICancelOperationHelper.cs" />
+    <Compile Include="BL\Command\ResponseGenerator.cs" />
     <Compile Include="BL\Command\CommandProcessor.cs" />
+    <Compile Include="BL\CommonLibVersionChecker.cs" />
     <Compile Include="BL\Command\ListCarsCommandHandler.cs" />
     <Compile Include="BL\Command\Service\ServiceCommandBuilder.cs" />
+    <Compile Include="BL\Container\CarContainer.cs" />
+    <Compile Include="BL\Container\ContainerConverter.cs" />
     <Compile Include="BL\MainProcessor.cs" />
-    <Compile Include="Car\Car.cs" />
+    <Compile Include="Car\CarRepository.cs" />
     <Compile Include="Car\ICarRepository.cs" />
-    <Compile Include="ClientsInteraction\IServerConnectionHolder.cs" />
-    <Compile Include="ClientsInteraction\Socket\SocketClientContextHolder.cs" />
     <Compile Include="ClientsInteraction\IClientAwaiter.cs" />
-    <Compile Include="ClientsInteraction\IClientContextHolder.cs" />
-    <Compile Include="ClientsInteraction\IMessenger.cs" />
-    <Compile Include="ClientsInteraction\Socket\ServerSocketConnectionHolder.cs" />
-    <Compile Include="ClientsInteraction\Socket\IServerSocketProvider.cs" />
+    <Compile Include="ClientsInteraction\IClientProcessor.cs" />
     <Compile Include="ClientsInteraction\Socket\IServerSocketSettingsProvider.cs" />
-    <Compile Include="ClientsInteraction\Socket\SocketClientAwaiter.cs" />
-    <Compile Include="ClientsInteraction\Socket\SocketMessenger.cs" />
-    <Compile Include="ClientsInteraction\Socket\SocketProvider.cs" />
     <Compile Include="ClientsInteraction\Socket\SocketSettingsHardcodeProvider.cs" />
-    <Compile Include="BL\Command\CommandExecutor.cs" />
     <Compile Include="BL\Command\Service\ServiceCommandProcessor.cs" />
-    <Compile Include="ClientsInteraction\Config\ConnectionProvider.cs" />
-    <Compile Include="ClientsInteraction\Config\IConnectionConfigurator.cs" />
-    <Compile Include="ClientsInteraction\Config\SocketConnectionConfigurator.cs" />
-    <Compile Include="Customer\Customer.cs" />
-    <Compile Include="Car\SQLCars.cs" />
-    <Compile Include="Customer\ICustomerRepository.cs" />
+    <Compile Include="ClientsInteraction\Config\ClientAwaiterFactory.cs" />
+    <Compile Include="ClientsInteraction\TcpListener\IMessenger.cs" />
+    <Compile Include="ClientsInteraction\TcpListener\TcpClientProcessor.cs" />
+    <Compile Include="ClientsInteraction\TcpListener\TcpListenerClientAwaiter.cs" />
+    <Compile Include="ClientsInteraction\TcpListener\TcpMessenger.cs" />
+    <Compile Include="Database\DbAccessorFactory.cs" />
+    <Compile Include="Database\DbDataConverter.cs" />
+    <Compile Include="Database\IDbAccessor.cs" />
+    <Compile Include="Database\SParameterFactory.cs" />
     <Compile Include="Database\SQLConnectionsFactory.cs" />
-    <Compile Include="Customer\SQLCustomer.cs" />
-    <Compile Include="Database\SQLStoredProcedureExecutor.cs" />
+    <Compile Include="Database\SQLDbAccessor.cs" />
     <Compile Include="Database\TransactionWrapper.cs" />
     <Compile Include="Log\ELogSeverity.cs" />
+    <Compile Include="Log\Log.cs" />
     <Compile Include="Log\ServerLogger.cs" />
     <Compile Include="Log\ILogger.cs" />
     <Compile Include="Program.cs" />
@@ -94,8 +94,6 @@
       <Name>MyStore.CommonLib</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Config\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

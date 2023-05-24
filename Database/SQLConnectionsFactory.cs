@@ -9,7 +9,7 @@ namespace MyStore.Server.Database
     {
         public static async Task<SqlConnection> GetConnectionAsync()
         {
-            SqlConnection conn = new SqlConnection(ConfigurationManager.ConnectionStrings["shop1"].ConnectionString);
+            SqlConnection conn = new SqlConnection(ConfigurationManager.ConnectionStrings["SQL"].ConnectionString);
             await conn.OpenAsync();
             return conn;
         }
