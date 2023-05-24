@@ -14,6 +14,12 @@ namespace MyStore.Server
         {
             _tcpClient = client;
         }
+
+        public void Dispose()
+        {
+            _tcpClient?.Dispose();
+        }
+
         public async Task<String> ReceiveMessageAsync()
         {
             StringBuilder sb = new StringBuilder();
@@ -29,7 +35,7 @@ namespace MyStore.Server
             }
             catch (Exception ex)
             {
-                Log.Exception(ex, "Receiving message failed from: {0}", _tcpClient.Client.RemoteEndPoint);
+                Log.Exception(ex, "Receiving message failed from: {0}", ToString());
                 throw;
             }
             return sb.ToString();
@@ -47,9 +53,14 @@ namespace MyStore.Server
             }
             catch (Exception ex)
             {
-                Log.Exception(ex, "Sending message failed to: {0}", _tcpClient.Client.RemoteEndPoint);
+                Log.Exception(ex, "Sending message failed to: {0}", ToString());
                 throw;
             }
+        }
+
+        public override String ToString()
+        {
+            return _tcpClient.Client.RemoteEndPoint.ToString();
         }
     }
 }

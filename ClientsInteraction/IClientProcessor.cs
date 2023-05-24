@@ -1,8 +1,9 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 
 namespace MyStore.Server
 {
-    internal interface IClientProcessor
+    internal interface IClientProcessor : IDisposable
     {
         Task ProcessClient();
     }

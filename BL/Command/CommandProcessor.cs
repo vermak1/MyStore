@@ -8,32 +8,17 @@ namespace MyStore.Server
     {
         private readonly ResponseGenerator _responseGenerator;
 
-        private readonly IMessenger _messenger;
-
         private readonly CommandParser _parser;
-        public CommandProcessor(IMessenger messenger)
+        public CommandProcessor()
         {
             _responseGenerator = new ResponseGenerator();
-            _messenger = messenger;
             _parser = new CommandParser();
         }
 
-        public async Task<Boolean> WaitRequestAndResponse()
+        public async Task<String> GetResponseFromCommand(String command)
         {
-            try
-            {
-                String command = await _messenger.ReceiveMessageAsync();
-                Log.Info("Command [{0}] received", command);
-                CommandInfo info = _parser.GetCommandInfo(command);
-                var response = await _responseGenerator.GenerateResponse(info);
-                await _messenger.SendMessageAsync(response);
-                return true;
-            }
-            catch (Exception ex)
-            {
-                Log.Exception(ex, "Failed to wait and response to client");
-                return false;
-            }
+            CommandInfo info = _parser.GetCommandInfo(command);
+            return await _responseGenerator.GenerateResponse(info);
         }
     }
 }

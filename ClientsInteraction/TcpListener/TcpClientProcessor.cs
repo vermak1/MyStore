@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net.Sockets;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace MyStore.Server
@@ -10,31 +11,73 @@ namespace MyStore.Server
 
         private readonly CommonLibVersionChecker _versionChecker;
 
-        public TcpClientProcessor(TcpClient tcpClient)
+        private readonly IMessenger _messenger;
+
+        private readonly ManualResetEvent _exitEvent;
+
+        private readonly CancellationToken _token;
+        public TcpClientProcessor(TcpClient tcpClient, CancellationToken token)
         {
-            IMessenger messenger = new TcpMessenger(tcpClient);
-            _versionChecker = new CommonLibVersionChecker(messenger);
-            _commandProcessor = new CommandProcessor(messenger);
+            _token = token;
+            _messenger = new TcpMessenger(tcpClient);
+            _versionChecker = new CommonLibVersionChecker(_messenger);
+            _commandProcessor = new CommandProcessor();
+            _exitEvent = new ManualResetEvent(true);
         }
 
+        public void Dispose()
+        {
+            _messenger?.Dispose();
+            _exitEvent?.Dispose();
+        }
+        public override string ToString()
+        {
+            return _messenger.ToString();
+        }
         public async Task ProcessClient()
         {
-            try
+            using (CancellationTokenRegistration tokenRegistration = _token.Register(WaitForEndOperationAndStop))
             {
-                if (!await _versionChecker.CheckVersion())
-                    return;
-
-                Boolean commandProcessed = await _commandProcessor.WaitRequestAndResponse();
-                while (commandProcessed)
+                try
                 {
-                    commandProcessed = await _commandProcessor.WaitRequestAndResponse();
+                    if (!await _versionChecker.CheckVersion())
+                        return;
+                
+                    while(!_token.IsCancellationRequested)
+                    {
+                        String command = await ReceiveCommand();
+                        await ResponseToClient(command);
+                    }
+                }
+                catch
+                {
+                    _token.ThrowIfCancellationRequested();
+                    throw;
                 }
             }
-            catch (Exception ex) 
-            {
-                Log.Exception(ex, "Failed to process client");
-                throw;
-            }
+        }
+
+        private void WaitForEndOperationAndStop()
+        {
+            Log.Info("Stopping process client '{0}' due to cancellation request", _messenger);
+            _exitEvent.WaitOne();
+            Dispose();
+        }
+
+        private async Task ResponseToClient(String command)
+        {
+            String response = await _commandProcessor.GetResponseFromCommand(command);
+            await _messenger.SendMessageAsync(response);
+            Log.Info("Response sent to client {0}", _messenger);
+            _exitEvent.Set();
+        }
+
+        private async Task<String> ReceiveCommand()
+        {
+            String command = await _messenger.ReceiveMessageAsync();
+            _exitEvent.Reset();
+            Log.Info("Command {0} received from client {1}", command, _messenger);
+            return command;
         }
     }
 }

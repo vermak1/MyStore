@@ -12,39 +12,66 @@ namespace MyStore.Server
         public TcpListenerClientAwaiter(IPEndPoint endpoint)
         {
             _tcpListener = new TcpListener(endpoint);
-            StartServer();
+            StartAwaitClients();
         }
 
-        private void StopServer()
+        private void StopAwaitClients()
         {
             _tcpListener.Stop();
-            Log.Info("Tcp listener has been stopped");
+            Log.Info("Tcp listener has been stopped receiving new connections");
         }
 
-        private void StartServer()
+        private void StartAwaitClients()
         {
             _tcpListener.Start();
             Log.Info("Start listening for incoming connections on address '{0}'", _tcpListener.LocalEndpoint);
         }
 
-        public async Task WaitingAndProcessClientAsync(AutoResetEvent wh)
+        private Task<IClientProcessor> ProcessNewCustomer(TcpClient tcpClient, CancellationToken token)
+        {
+            Task<IClientProcessor> task = Task.Run(async () =>
+            {
+                using (IClientProcessor clientProcessor = new TcpClientProcessor(tcpClient, token))
+                {
+                    try
+                    {
+                        await clientProcessor.ProcessClient();
+                    }
+                    catch (OperationCanceledException)
+                    { }
+                    catch (Exception ex)
+                    {
+                        Log.Exception(ex, "Failed to process client");
+                    }
+                    return clientProcessor;
+                }
+            });
+            return task;
+        }
+
+        public Task<IClientProcessor> WaitAndProcessClient(CancellationToken token)
         {
             Log.Info("Waiting for a new client");
-            try
+            TcpClient tcpClient = null;
+            using (CancellationTokenRegistration tokenRegistration = token.Register(StopAwaitClients))
             {
-                using (var tcpClient = await _tcpListener.AcceptTcpClientAsync())
+                try
                 {
-                    wh.Set();
-                    Log.Info("New client '{0}' connected", tcpClient.Client.RemoteEndPoint);
-                    IClientProcessor processor = new TcpClientProcessor(tcpClient);
-                    await processor.ProcessClient();
+                    var task = Task.Run(async () =>
+                    {
+                        return await _tcpListener.AcceptTcpClientAsync();
+                    });
+                    tcpClient = task.Result;
+                    Log.Info("Client {0} connected to server", tcpClient.Client.RemoteEndPoint);
+                }
+                catch
+                {
+                    tcpClient?.Dispose();
+                    token.ThrowIfCancellationRequested();
+                    throw;
                 }
             }
-            catch(Exception ex)
-            {
-                StopServer();
-                Log.Exception(ex, "Fail during communication cycle with client");
-            }
+            return ProcessNewCustomer(tcpClient, token);
         }
     }
 }
