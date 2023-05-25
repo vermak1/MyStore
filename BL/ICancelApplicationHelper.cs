@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace MyStore.Server
 {
-    internal interface ICancelOperationHelper : IDisposable
+    internal interface ICancelApplicationHelper : IDisposable
     {
         void WaitForCompletedOperations();
         void SignalStop();

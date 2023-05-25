@@ -5,11 +5,11 @@ using System.Threading.Tasks;
 
 namespace MyStore.Server
 {
-    internal class CancelOperationHelper : ICancelOperationHelper
+    internal class CancelApplicationHelper : ICancelApplicationHelper
     {
         private readonly List<Task<IClientProcessor>> _clients;
         private readonly CancellationTokenSource _cancellationTokenSource;
-        public CancelOperationHelper()
+        public CancelApplicationHelper()
         {
             _cancellationTokenSource = new CancellationTokenSource();
             _clients = new List<Task<IClientProcessor>>();
