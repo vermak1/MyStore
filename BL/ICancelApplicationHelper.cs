@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace MyStore.Server
 {
@@ -8,7 +7,7 @@ namespace MyStore.Server
     {
         void WaitForCompletedOperations();
         void SignalStop();
-        void AddTask(Task<IClientProcessor> task);
+        ClientHelperInfo AddClient(ClientHelperInfo client);
         CancellationToken ExitRequestedToken { get; }
     }
 }

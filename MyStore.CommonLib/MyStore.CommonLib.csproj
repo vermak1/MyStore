@@ -51,6 +51,8 @@
     <Compile Include="Command\Service\LibVersionCommand.cs" />
     <Compile Include="Command\Service\ServiceCommandFactory.cs" />
     <Compile Include="Command\Service\ServiceCommandParser.cs" />
+    <Compile Include="Containers\EResponseCode.cs" />
+    <Compile Include="Containers\ErrorResponseInfo.cs" />
     <Compile Include="Containers\ListCarCommand.cs" />
     <Compile Include="Containers\ListCarsResponseInfo.cs" />
     <Compile Include="Containers\ResponseInfo.cs" />

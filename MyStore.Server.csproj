@@ -45,6 +45,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BL\CancelApplicationHelper.cs" />
+    <Compile Include="BL\ClientHelperInfo.cs" />
     <Compile Include="BL\ICancelApplicationHelper.cs" />
     <Compile Include="BL\Command\ResponseGenerator.cs" />
     <Compile Include="BL\Command\CommandProcessor.cs" />
@@ -54,6 +55,10 @@
     <Compile Include="BL\Container\CarContainer.cs" />
     <Compile Include="BL\Container\ContainerConverter.cs" />
     <Compile Include="BL\MainProcessor.cs" />
+    <Compile Include="BL\Result\EResultStatus.cs" />
+    <Compile Include="BL\Result\IResult.cs" />
+    <Compile Include="BL\Result\Result.cs" />
+    <Compile Include="BL\Result\ResultFactory.cs" />
     <Compile Include="Car\CarRepository.cs" />
     <Compile Include="Car\ICarRepository.cs" />
     <Compile Include="ClientsInteraction\IClientAwaiter.cs" />
@@ -62,6 +67,7 @@
     <Compile Include="ClientsInteraction\Socket\SocketSettingsHardcodeProvider.cs" />
     <Compile Include="BL\Command\Service\ServiceCommandProcessor.cs" />
     <Compile Include="ClientsInteraction\Config\ClientAwaiterFactory.cs" />
+    <Compile Include="ClientsInteraction\TcpListener\ErrorHandler.cs" />
     <Compile Include="ClientsInteraction\TcpListener\IMessenger.cs" />
     <Compile Include="ClientsInteraction\TcpListener\TcpClientProcessor.cs" />
     <Compile Include="ClientsInteraction\TcpListener\TcpListenerClientAwaiter.cs" />

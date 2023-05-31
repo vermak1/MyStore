@@ -19,7 +19,21 @@ namespace MyStore.CommonLib
 
             var response = new UnknownCommandResponse
             {
-                Message = message
+                Message = message,
+                Code = EResponseCode.ClientError
+            };
+            return _serializer.SerializeObject(response);
+        }
+
+        public String ServerError(String message)
+        {
+            if (message == null)
+                throw new ArgumentNullException();
+
+            var response = new ErrorResponseInfo
+            {
+                Message = message,
+                Code = EResponseCode.ServerError
             };
             return _serializer.SerializeObject(response);
         }

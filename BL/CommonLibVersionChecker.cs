@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using MyStore.CommonLib;
 
@@ -19,12 +20,13 @@ namespace MyStore.Server
             _serviceCommandProcessor = new ServiceCommandProcessor();
         }
 
-        public async Task<Boolean> CheckVersion()
+        public async Task<Boolean> CheckVersion(ManualResetEvent exitEvent)
         {
             var request = await _messenger.ReceiveMessageAsync();
+            exitEvent.Reset();
             Int32 serverVersion = LibraryInfo.Version;
-            Boolean correctServiceCommand = _serviceCommandProcessor.TryGetLibVersionCommand(request, out Int32 clientVersion);
-            if (!correctServiceCommand)
+            Boolean isServiceCommandCorrect = _serviceCommandProcessor.TryGetLibVersionCommand(request, out Int32 clientVersion);
+            if (!isServiceCommandCorrect)
             {
                 Log.Error("Wrong command provided: [{0}]", request);
                 return false;
@@ -34,10 +36,10 @@ namespace MyStore.Server
             await _messenger.SendMessageAsync(responseWithVersion);
             if (serverVersion != clientVersion)
             {
-                Log.Error("Common dll version mismatch: server version: {0}, client '{1}' version: {2}", serverVersion, _messenger, clientVersion);
+                Log.Error("Common dll version mismatch: server version: {0}, client '{1}' version: {2}", serverVersion, _messenger.Address, clientVersion);
                 return false;
             }
-            Log.Info("Common dll versions of server and client '{0}' are matched, version '{1}'", _messenger, serverVersion);
+            Log.Info("Common dll versions of server and client '{0}' are matched, version '{1}'", _messenger.Address, serverVersion);
             return true;
         }
     }

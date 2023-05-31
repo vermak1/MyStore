@@ -25,16 +25,14 @@ namespace MyStore.Server
             _cancelApplicationHelper.SignalStop();
         }
 
-        public void StartServer()
+        public async Task StartServer()
         {
             Log.Info("Server is started");
             while (!_cancelApplicationHelper.ExitRequestedToken.IsCancellationRequested)
             {
                 try
                 {
-                    var task = _clientAwaiter.WaitAndProcessClient(_cancelApplicationHelper.ExitRequestedToken);
-                    if (task.Status != TaskStatus.Canceled)
-                        _cancelApplicationHelper.AddTask(task);
+                    await _clientAwaiter.WaitAndProcessClient(_cancelApplicationHelper.ExitRequestedToken, _cancelApplicationHelper);
                 }
                 catch (OperationCanceledException)
                 { }

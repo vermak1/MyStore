@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace MyStore.Server
@@ -10,15 +11,44 @@ namespace MyStore.Server
         private const Int32 BUFFER_SIZE = 512;
 
         private readonly TcpClient _tcpClient;
+
+        private readonly String _address;
         public TcpMessenger(TcpClient client)
         {
-            _tcpClient = client;
+            _tcpClient = client ?? throw new ArgumentNullException(nameof(client));
+            _address = _tcpClient.Client.RemoteEndPoint.ToString();
         }
 
-        public void Dispose()
+        public Boolean IsConnected
         {
-            _tcpClient?.Dispose();
+            get
+            {
+                try
+                {
+                    if (_tcpClient != null && _tcpClient.Client != null && _tcpClient.Client.Connected)
+                    {
+
+                        if (_tcpClient.Client.Poll(0, SelectMode.SelectRead))
+                        {
+                            byte[] buff = new byte[1];
+                            if (_tcpClient.Client.Receive(buff, SocketFlags.Peek) == 0)
+                                return false;
+
+                            return true;
+                        }
+
+                        return true;
+                    }
+                    return false;
+                }
+                catch
+                {
+                    return false;
+                }
+            }
         }
+
+        public String Address => _address;
 
         public async Task<String> ReceiveMessageAsync()
         {
@@ -35,7 +65,7 @@ namespace MyStore.Server
             }
             catch (Exception ex)
             {
-                Log.Exception(ex, "Receiving message failed from: {0}", ToString());
+                Log.Exception(ex, "Receiving message failed from: {0}", _address);
                 throw;
             }
             return sb.ToString();
@@ -53,14 +83,9 @@ namespace MyStore.Server
             }
             catch (Exception ex)
             {
-                Log.Exception(ex, "Sending message failed to: {0}", ToString());
+                Log.Exception(ex, "Sending message failed to: {0}", _address);
                 throw;
             }
-        }
-
-        public override String ToString()
-        {
-            return _tcpClient.Client.RemoteEndPoint.ToString();
         }
     }
 }

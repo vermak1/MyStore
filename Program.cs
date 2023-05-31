@@ -1,16 +1,17 @@
 ﻿using System;
+using System.Threading.Tasks;
 
 namespace MyStore.Server
 {
     internal class Program
     {
-        static void Main()
+        static async Task Main()
         {
             try
             {
                 using (MainProcessor main = new MainProcessor())
                 {
-                    main.StartServer();
+                    await main.StartServer();
                 }
             }
             catch(Exception ex)

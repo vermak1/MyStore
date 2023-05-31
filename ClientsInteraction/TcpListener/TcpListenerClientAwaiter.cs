@@ -27,29 +27,28 @@ namespace MyStore.Server
             Log.Info("Start listening for incoming connections on address '{0}'", _tcpListener.LocalEndpoint);
         }
 
-        private Task<IClientProcessor> ProcessNewCustomer(TcpClient tcpClient, CancellationToken token)
+        private void ProcessNewCustomer(TcpClient tcpClient, CancellationToken token, ICancelApplicationHelper helper)
         {
-            Task<IClientProcessor> task = Task.Run(async () =>
+            ThreadPool.QueueUserWorkItem(async (o) =>
             {
-                using (IClientProcessor clientProcessor = new TcpClientProcessor(tcpClient, token))
+                IClientProcessor clientProcessor = new TcpClientProcessor(tcpClient, token, helper);
+                try
                 {
-                    try
-                    {
-                        await clientProcessor.ProcessClient();
-                    }
-                    catch (OperationCanceledException)
-                    { }
-                    catch (Exception ex)
-                    {
-                        Log.Exception(ex, "Failed to process client");
-                    }
-                    return clientProcessor;
+                    await clientProcessor.ProcessClient();
+                }
+                catch (Exception e)
+                {
+                    Log.Exception(e, "Failed to process client");
+                }
+                finally
+                {
+                    clientProcessor?.Dispose();
+                    tcpClient.Dispose();
                 }
             });
-            return task;
         }
 
-        public Task<IClientProcessor> WaitAndProcessClient(CancellationToken token)
+        public async Task WaitAndProcessClient(CancellationToken token, ICancelApplicationHelper helper)
         {
             Log.Info("Waiting for a new client");
             TcpClient tcpClient = null;
@@ -57,12 +56,9 @@ namespace MyStore.Server
             {
                 try
                 {
-                    var task = Task.Run(async () =>
-                    {
-                        return await _tcpListener.AcceptTcpClientAsync();
-                    });
-                    tcpClient = task.Result;
+                    tcpClient = await _tcpListener.AcceptTcpClientAsync();
                     Log.Info("Client {0} connected to server", tcpClient.Client.RemoteEndPoint);
+                    ProcessNewCustomer(tcpClient, token, helper);
                 }
                 catch
                 {
@@ -71,7 +67,7 @@ namespace MyStore.Server
                     throw;
                 }
             }
-            return ProcessNewCustomer(tcpClient, token);
+            
         }
     }
 }

@@ -2,7 +2,6 @@
 {
     public enum ECommandType
     {
-        Unknown = -1,
         Login = 0,
         CreateCustomer = 1,
         GetCustomerInfo = 2,

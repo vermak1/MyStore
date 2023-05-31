@@ -36,12 +36,12 @@ namespace MyStore.Server
                 default:
                     throw new Exception("There is not such command type for retrieving cars");
             }
-            return GetStringFromResult(result);
+            return GetStringFromResult(result, command.CommandType);
         }
 
-        private String GetStringFromResult(List<CarContainer> cars)
+        private String GetStringFromResult(List<CarContainer> cars, ECommandType type)
         {
-            var commonLibInfo = ContainerConverter.ConvertFromServerListToCommonLib(cars);
+            var commonLibInfo = ContainerConverter.ConvertFromServerListToCommonLib(cars, type);
             return _factory.ResponseListAllCars(commonLibInfo);
         }
     }

@@ -5,9 +5,13 @@ namespace MyStore.Server
 {
     internal class ContainerConverter
     {
-        public static ListCarsResponseInfo ConvertFromServerListToCommonLib(List<CarContainer> container)
+        public static ListCarsResponseInfo ConvertFromServerListToCommonLib(List<CarContainer> container, ECommandType type)
         {
-            ListCarsResponseInfo info = new ListCarsResponseInfo();
+            ListCarsResponseInfo info = new ListCarsResponseInfo()
+            {
+                Code = EResponseCode.Success,
+                Type = type,
+            };
 
             foreach (CarContainer car in container)
             {
