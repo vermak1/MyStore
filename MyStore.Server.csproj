@@ -82,8 +82,6 @@
     <Compile Include="Database\TransactionWrapper.cs" />
     <Compile Include="Log\ELogSeverity.cs" />
     <Compile Include="Log\Log.cs" />
-    <Compile Include="Log\ServerLogger.cs" />
-    <Compile Include="Log\ILogger.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
