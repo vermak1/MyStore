@@ -46,6 +46,7 @@
   <ItemGroup>
     <Compile Include="BL\CancelApplicationHelper.cs" />
     <Compile Include="BL\ClientHelperInfo.cs" />
+    <Compile Include="BL\Extensions\WaitHandleExtensions.cs" />
     <Compile Include="BL\ICancelApplicationHelper.cs" />
     <Compile Include="BL\Command\ResponseGenerator.cs" />
     <Compile Include="BL\Command\CommandProcessor.cs" />

@@ -45,8 +45,7 @@ namespace MyStore.Server
         public void Dispose()
         {
             _exitEvent?.Dispose();
-            if(!_clientHelperInfo.WorkIsEndEvent.SafeWaitHandle.IsClosed)
-                _clientHelperInfo.WorkIsEndEvent.Set();
+            _clientHelperInfo.WorkIsEndEvent.SafeSet();
         }
 
         public async Task ProcessClient()
@@ -89,8 +88,7 @@ namespace MyStore.Server
         {
             Log.Info("Stopping process client '{0}' due to cancellation request", _clientHelperInfo.Address);
             _exitEvent.WaitOne();
-            if (!_clientHelperInfo.WorkIsEndEvent.SafeWaitHandle.IsClosed)
-                _clientHelperInfo.WorkIsEndEvent.Set();
+            _clientHelperInfo.WorkIsEndEvent.SafeSet();
         }
 
         private async Task HandleException(Exception ex)
