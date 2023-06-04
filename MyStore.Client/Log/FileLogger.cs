@@ -25,13 +25,13 @@ namespace MyStore.Client
         public void Exception(Exception ex, string message)
         {
             LogInternal(message, ELogSeverity.Error);
-            LogInternal(ex.StackTrace, ELogSeverity.Error);
+            ExceptionInternal(ex);
         }
 
         public void Exception(Exception ex, string message, params object[] args)
         {
             LogInternalWithArgs(message, ELogSeverity.Error, args);
-            LogInternal(ex.StackTrace, ELogSeverity.Error);
+            ExceptionInternal(ex);
         }
 
         public void Info(string message)
@@ -74,6 +74,17 @@ namespace MyStore.Client
             String formatted = String.Format("[{0}] <{1}>\t[{2}]\t{3}", DateTime.Now, Thread.CurrentThread.ManagedThreadId, severity, message);
             _traceSource.TraceInformation(formatted);
             _traceSource.Flush();
+        }
+
+        public void Exception(Exception ex)
+        {
+            ExceptionInternal(ex);
+        }
+
+        private void ExceptionInternal(Exception ex)
+        {
+            LogInternal(ex.Message, ELogSeverity.Error);
+            LogInternal(ex.StackTrace, ELogSeverity.Error);
         }
     }
 }

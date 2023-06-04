@@ -53,5 +53,13 @@ namespace MyStore.CommonLib
             return _serializer.SerializeObject(command);
         }
 
+        public CommandInfo GetCommandType(String command)
+        {
+            if (String.IsNullOrEmpty(command))
+                throw new ArgumentException(nameof(command));
+
+            return _serializer.DeserializeObject<CommandInfo>(command);
+        }
+
     }
 }

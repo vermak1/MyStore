@@ -20,10 +20,16 @@ namespace MyStore.Client
             }
             catch(Exception ex)
             {
-                _logger.Exception(ex, "Application is closed");
-                Environment.Exit(1);
+                _logger.Exception(ex);
+                Exit(1);
             }
-            
+            Exit(0);
+        }
+        
+        private static void Exit(int exitCode)
+        {
+            _logger.Info("Application is closed with code {0}", exitCode);
+            Environment.Exit(exitCode);
         }
     }
 }

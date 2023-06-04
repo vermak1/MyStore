@@ -56,7 +56,7 @@
     <Compile Include="Containers\ListCarCommand.cs" />
     <Compile Include="Containers\ListCarsResponseInfo.cs" />
     <Compile Include="Containers\ResponseInfo.cs" />
-    <Compile Include="Containers\UnknownCommandResponse.cs" />
+    <Compile Include="Containers\UnknownCommandResponseInfo.cs" />
     <Compile Include="Converting\ISerializer.cs" />
     <Compile Include="Converting\JsonSerializer.cs" />
     <Compile Include="Containers\CarInfo.cs" />

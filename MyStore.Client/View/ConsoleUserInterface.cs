@@ -18,22 +18,25 @@ namespace MyStore.Client
             _logger = Configurator.Instance.GetLogger();
         }
 
-        public String GetMessageFromUser()
+        private String GetMessageFromUser()
         {
             Console.WriteLine(">");
             return Console.ReadLine();
         }
 
-        public void ShowMessage(String message)
+        private void ShowMessage(String message)
         {
             if(message == null)
                 throw new ArgumentNullException(nameof(message));
 
             foreach (var line in message.Split('\n'))
-                Console.WriteLine("[{0}]\t{1}", DateTime.Now, line);
+            {
+                if (!String.IsNullOrWhiteSpace(line))
+                    Console.WriteLine("[{0}]\t{1}", DateTime.Now, line);
+            }
         }
 
-        public void ShowMessage(IEnumerable<String> message)
+        private void ShowMessage(IEnumerable<String> message)
         {
             if (message == null)
                 throw new ArgumentNullException(nameof(message));
@@ -42,7 +45,7 @@ namespace MyStore.Client
                 ShowMessage(line);
         }
 
-        public void ShowMessage(String message, params object[] args)
+        private void ShowMessage(String message, params object[] args)
         {
             if (args == null)
             {
@@ -75,7 +78,7 @@ namespace MyStore.Client
             
         }
 
-        public void ShowAvailableCommands()
+        private void ShowAvailableCommands()
         {
             EUserCommand[] commands = _userContext.GetAvailableCommands();
             String[] descrs = CommandsDescriptor.GetDescriptions(commands);

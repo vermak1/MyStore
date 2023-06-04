@@ -17,7 +17,7 @@ namespace MyStore.CommonLib
             if (message == null) 
                 throw new ArgumentNullException();
 
-            var response = new UnknownCommandResponse
+            var response = new UnknownCommandResponseInfo
             {
                 Message = message,
                 Code = EResponseCode.ClientError

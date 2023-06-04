@@ -16,5 +16,10 @@ namespace MyStore.Client
         {
             return _parser.GetListCarsResponseInfo(response);
         }
+
+        public ResponseInfo GetResponseInfoFromResponse(String response)
+        {
+            return _parser.GetResponseInfoFromString(response);
+        }
     }
 }

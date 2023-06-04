@@ -37,6 +37,7 @@ namespace MyStore.Server
             }
             catch
             {
+                tcpClient.Dispose();
                 Dispose();
                 throw;
             }

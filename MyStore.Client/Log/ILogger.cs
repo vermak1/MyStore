@@ -18,6 +18,8 @@ namespace MyStore.Client
 
         void Exception(Exception ex, String message);
 
+        void Exception(Exception ex);
+
         void Exception(Exception ex, String message, params object[] args);
     }
 }

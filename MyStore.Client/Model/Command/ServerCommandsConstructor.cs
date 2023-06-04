@@ -27,5 +27,10 @@ namespace MyStore.Client
                     throw new ArgumentException("Non-existent subtype of ListCarsCommand");
             }
         }
+
+        public CommandInfo GetTypeCommandFromString(String command)
+        {
+            return _factory.GetCommandType(command);
+        }
     }
 }

@@ -2,7 +2,7 @@
 
 namespace MyStore.CommonLib
 {
-    internal class UnknownCommandResponse : ResponseInfo
+    public class UnknownCommandResponseInfo : ResponseInfo
     {
         public String Message { get; set; }
     }
